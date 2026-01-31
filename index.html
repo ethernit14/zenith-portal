@@ -331,7 +331,7 @@
     </div>
     
     <footer>
-        <p>&copy; 2025 / Doruk Orak. All rights reserved.</p>
+        <p>&copy; 2026 / Doruk Orak. All rights reserved.</p>
     </footer>
 
     <script>
@@ -383,6 +383,31 @@
                 createShootingStar();
             }
         }, 7000);
+        // Phantom Wallet Bağlantı Mantığı
+const connectButton = document.getElementById('connectButton');
+
+connectButton.addEventListener('click', async () => {
+    // Tarayıcıda Phantom (veya Solana uyumlu cüzdan) var mı?
+    const isPhantomInstalled = window.solana && window.solana.isPhantom;
+
+    if (isPhantomInstalled) {
+        try {
+            // Cüzdana bağlanma isteği gönder
+            const response = await window.solana.connect();
+            const walletAddress = response.publicKey.toString();
+            
+            // Bağlantı başarılıysa butonu güncelle
+            connectButton.innerText = "Connected: " + walletAddress.slice(0, 4) + "..." + walletAddress.slice(-4);
+            connectButton.style.background = "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)"; // Başarılıysa yeşil yap
+        } catch (err) {
+            console.error("Bağlantı kullanıcı tarafından reddedildi.");
+        }
+    } else {
+        // Cüzdan yoksa Phantom'un sitesine yönlendir
+        alert("Phantom Wallet bulunamadı! Lütfen önce eklentiyi kurun.");
+        window.open("https://phantom.app/", "_blank");
+    }
+});
     </script>
 </body>
 </html>
