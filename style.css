@@ -1,11 +1,14 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
+    margin: 0; 
     color: #e0e0e0;
     font-family: 'Segoe UI', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
     background: #0a0e27; 
+    display: flex;
+    flex-direction: column;
 }
 
 #stars-container {
@@ -58,19 +61,15 @@ body {
     position: relative;
     z-index: 10;
     width: 100%;
-    flex: 1;
+    flex: 1; 
     display: flex;
+    flex-direction: column;
     justify-content: center; 
-    align-items: center;
+    align-items: center;   
 }
 
 .hero-panel {
     width: 100%;
-    position: relative;
-    left: 50%;
-    right: 50%;;
-    margin-left: -50vw;
-    margin-right: -50vw;
     background: rgba(13, 17, 43, 0.7);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
@@ -79,10 +78,9 @@ body {
     border-bottom: 1px solid rgba(102, 126, 234, 0.15);
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; 
     justify-content: center;
     gap: 15px;
-}
 
 h1 {
     font-size: clamp(2.5rem, 8vw, 4.5rem);
@@ -202,11 +200,18 @@ footer {
     width: 100%; 
 }
 
-.menu-container { position: fixed; top: 30px; left: 30px; z-index: 5000; }
+.menu-container { position: fixed; top: 30px; left: 30px; z-index: 9999; }
 .side-menu {
-    position: fixed; top: 0; left: -320px; width: 300px; height: 100vh;
-    background: #0d1117; z-index: 4999; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed; 
+    top: 0; 
+    left: -320px; 
+    width: 300px; 
+    height: 100vh;
+    background: #0d1117; 
+    z-index: 9998; 
+    transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    border-right: 1px solid rgba(102, 126, 234, 0.3);
+    padding-top: 100px;
 }
 .side-menu.active { left: 0; }
-.side-menu a { display: block; color: #fff; padding: 25px 40px; text-decoration: none; letter-spacing: 2px; }
