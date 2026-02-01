@@ -8,7 +8,6 @@ function toggleMenu() {
 function createStars() {
     const container = document.getElementById('stars1') || document.getElementById('stars-container');
     if (!container) return;
-    
 
     container.innerHTML = ''; 
 
@@ -20,7 +19,7 @@ function createStars() {
         const size = Math.random() * 3 + 'px';
         star.style.width = size;
         star.style.height = size;
-        star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
         container.appendChild(star);
     }
 }
