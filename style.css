@@ -63,17 +63,23 @@ body {
 }
 
 .hero-panel {
-    width: 100%;
-    background: rgba(26, 31, 58, 0.4);
-    backdrop-filter: blur(10px);
+    width: 100vw
+    position: relative;
+    left: 50%;
+    right: 50%;;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    background: rgba(13, 17, 43, 0.7);
+    backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    padding: 60px 20px;
-    border-top: 1px solid rgba(102, 126, 234, 0.2);
-    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    padding: 80px 0;
+    border-top: 1px solid rgba(102, 126, 234, 0.15);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    justify-content: center;
+    gap: 15px;
 }
 
 h1 {
@@ -100,6 +106,16 @@ h1 {
     color: #667eea;
     text-transform: uppercase;
     font-weight: 300;
+}
+
+.content-layer {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
 }
 
 .section-title {
