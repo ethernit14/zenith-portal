@@ -1,31 +1,25 @@
 function toggleMenu() {
-    document.getElementById('sideMenu').classList.toggle('active');
+    const sideMenu = document.getElementById('sideMenu');
+    // 'active' sınıfı varsa çıkarır, yoksa ekler
+    sideMenu.classList.toggle('active');
 }
 
-// Yıldızları oluşturma
-const starContainer = document.getElementById('stars-container');
-if (starContainer) {
-    for (let i = 0; i < 200; i++) {
+// Yıldız Oluşturma (Görünürlük için şart)
+function createStars() {
+    const container = document.getElementById('stars-container');
+    if (!container) return;
+    
+    for (let i = 0; i < 150; i++) {
         const star = document.createElement('div');
         star.className = 'star';
-        const size = Math.random() * 2.5;
-        star.style.width = size + 'px';
-        star.style.height = size + 'px';
+        const size = Math.random() * 3 + 'px';
+        star.style.width = size;
+        star.style.height = size;
         star.style.left = Math.random() * 100 + '%';
         star.style.top = Math.random() * 100 + '%';
         star.style.animationDuration = (Math.random() * 3 + 2) + 's';
-        starContainer.appendChild(star);
+        container.appendChild(star);
     }
 }
 
-// Kayan yıldız efekti
-setInterval(() => {
-    if (Math.random() > 0.8) {
-        const shooter = document.createElement('div');
-        shooter.className = 'shooting-star';
-        shooter.style.left = Math.random() * 100 + '%';
-        shooter.style.top = Math.random() * 50 + '%';
-        document.body.appendChild(shooter);
-        setTimeout(() => shooter.remove(), 3000);
-    }
-}, 4000);
+document.addEventListener('DOMContentLoaded', createStars);
