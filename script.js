@@ -23,6 +23,7 @@ function createStars() {
         star.style.setProperty('--speed', (Math.random() * 40 + 40) + 's');
         
         container.appendChild(star);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', createStars);
