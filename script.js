@@ -6,6 +6,7 @@ function toggleMenu() {
 document.addEventListener('click', (e) => {
     const menu = document.getElementById('sideMenu');
     const hamburger = document.querySelector('.hamburger');
+    const closeBtn = document.querySelector('.close-menu');
     
     if (menu && menu.classList.contains('active')) {
         if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
