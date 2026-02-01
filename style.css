@@ -18,7 +18,8 @@ body {
     background: white;
     border-radius: 50%;
     opacity: 0.5;
-    animation: twinkle var(--duration, 3s) infinite alternate ease-in-out;
+    animation: twinkle var(--duration, 3s) infinite alternate ease-in-out, 
+               moveStars var(--speed, 50s) linear infinite;
 }
 
 @keyframes twinkle {
@@ -26,22 +27,54 @@ body {
     to { opacity: 1; transform: scale(1.2); }
 }
 
+@keyframes moveStars {
+    from { transform: translateY(0); }
+    to { transform: translateY(-100vh); }
+}
+
 .content-layer {
     position: relative;
     z-index: 10;
-    padding: 100px 20px;
-    max-width: 1300px;
+    padding: 100px 0; 
+    max-width: 100%; 
     margin: 0 auto;
     text-align: center;
+}
+
+.hero-panel {
+    width: 100%;
+    background: rgba(26, 31, 58, 0.4);
+    backdrop-filter: blur(10px);
+    padding: 60px 20px;
+    border-top: 1px solid rgba(102, 126, 234, 0.2);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    margin: 20px 0;
 }
 
 h1 {
     font-size: clamp(2.5rem, 8vw, 4.5rem);
     letter-spacing: 10px;
-    background: linear-gradient(135deg, #667eea, #f093fb);
+    background: linear-gradient(135deg, #667eea, #f093fb, #667eea);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 20px;
+    animation: shimmer 5s linear infinite, glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.6)); }
+    to { filter: drop-shadow(0 0 25px rgba(240, 147, 251, 0.9)); }
+}
+
+@keyframes shimmer { to { background-position: 200% center; } }
+
+.subtitle {
+    font-size: 1.2rem;
+    letter-spacing: 5px;
+    color: #a0aec0;
+    text-transform: uppercase;
+    margin-top: 10px;
 }
 
 .section-title {
@@ -121,4 +154,12 @@ h1 {
     color: #f093fb;
 }
 
-footer { text-align: center; padding: 40px; color: #718096; position: relative; z-index: 10; }
+footer { 
+    text-align: center; 
+    padding: 40px; 
+    color: #718096; 
+    position: relative; 
+    z-index: 10; 
+    background: rgba(5, 8, 20, 0.9);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
