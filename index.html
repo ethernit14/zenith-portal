@@ -334,6 +334,7 @@
         <p>&copy; 2026 / Doruk Orak. All rights reserved.</p>
     </footer>
 
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
     <script>
         // Generate stars
         function createStars() {
@@ -384,30 +385,48 @@
             }
         }, 7000);
         // Phantom Wallet Bağlantı Mantığı
-const connectButton = document.getElementById('connectButton');
-
-connectButton.addEventListener('click', async () => {
-    // Tarayıcıda Phantom (veya Solana uyumlu cüzdan) var mı?
-    const isPhantomInstalled = window.solana && window.solana.isPhantom;
-
-    if (isPhantomInstalled) {
-        try {
-            // Cüzdana bağlanma isteği gönder
-            const response = await window.solana.connect();
-            const walletAddress = response.publicKey.toString();
-            
-            // Bağlantı başarılıysa butonu güncelle
-            connectButton.innerText = "Connected: " + walletAddress.slice(0, 4) + "..." + walletAddress.slice(-4);
-            connectButton.style.background = "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)"; // Başarılıysa yeşil yap
-        } catch (err) {
-            console.error("Bağlantı kullanıcı tarafından reddedildi.");
-        }
-    } else {
-        // Cüzdan yoksa Phantom'un sitesine yönlendir
-        alert("Phantom Wallet bulunamadı! Lütfen önce eklentiyi kurun.");
-        window.open("https://phantom.app/", "_blank");
-    }
-});
+        // Phantom Wallet ve Bakiye Sorgulama Mantığı
+        const connectButton = document.getElementById('connectButton');
+        
+        // Solana ağına (Mainnet) bağlantı kuruyoruz
+        const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+        
+        connectButton.addEventListener('click', async () => {
+            const isPhantomInstalled = window.solana && window.solana.isPhantom;
+        
+            if (isPhantomInstalled) {
+                try {
+                    // 1. Cüzdanı Bağla
+                    const response = await window.solana.connect();
+                    const walletAddress = response.publicKey.toString();
+                    
+                    // Butonda "Yükleniyor..." mesajı göster
+                    connectButton.innerText = "Loading Balance...";
+        
+                    // 2. Bakiyeyi Sorgula
+                    const walletPublicKey = new solanaWeb3.PublicKey(walletAddress);
+                    const balanceInLamports = await connection.getBalance(walletPublicKey);
+                    
+                    // 3. SOL'a Çevir (1 SOL = 10^9 Lamports)
+                    const solBalance = balanceInLamports / 1000000000;
+        
+                    // 4. Butonu Güncelle: Bakiye | Adres
+                    connectButton.innerText = `${solBalance.toFixed(3)} SOL | ${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
+                    
+                    // Başarılı bağlantı rengi (Yeşil gradyan)
+                    connectButton.style.background = "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)";
+                    connectButton.style.boxShadow = "0 4px 15px rgba(74, 222, 128, 0.3)";
+                    
+                } catch (err) {
+                    console.error("Hata:", err);
+                    connectButton.innerText = "Connection Failed";
+                }
+            } else {
+                // Phantom yüklü değilse yönlendir
+                alert("Please install Phantom Wallet!");
+                window.open("https://phantom.app/", "_blank");
+            }
+        });
     </script>
 </body>
 </html>
