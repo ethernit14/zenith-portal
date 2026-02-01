@@ -13,7 +13,11 @@ body {
 }
 
 #stars-container {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed; 
+    top: -50%; 
+    left: -50%; 
+    width: 200%; 
+    height: 200%;
     z-index: -1; 
     overflow: hidden; 
 }
@@ -23,7 +27,7 @@ body {
     background: white;
     border-radius: 50%;
     opacity: 0.5;
-    transform-origin: 50vw 150vh; 
+    transform-origin: center; 
     animation: twinkle var(--duration, 3s) infinite alternate ease-in-out,
                rotateSky var(--speed, 100s) linear infinite;
     animation-delay: var(--twinkle-delay, 0s); 
@@ -35,8 +39,8 @@ body {
 }
 
 @keyframes rotateSky {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg) translate(0,0); }
+    to { transform: rotate(360deg) translate(0,0); }
 }
 
 .shooting-star {
