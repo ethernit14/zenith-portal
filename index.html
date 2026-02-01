@@ -20,6 +20,7 @@
         .stars { position: absolute; width: 100%; height: 100%; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle linear infinite; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        
         @keyframes shooting-star {
             0% { transform: translateX(0) translateY(0); opacity: 1; }
             100% { transform: translateX(-500px) translateY(500px); opacity: 0; }
@@ -130,13 +131,13 @@
         <div class="projects">
             <div class="project-card">
                 <h3>🩸 Diabetes Predictor</h3>
-                <p> Multiple Linear Regression Model that predicts the diabetes progression. </p>
+                <p> Multiple Linear Regression Model that predicts diabetes progression. </p>
                 <div class="button-container"><a href="https://ai-diabetes.streamlit.app" target="_blank">Launch Model</a></div>
             </div>
             <div class="project-card" style="border-color: rgba(245, 87, 108, 0.3);">
                 <h3> 🧬 Tumor Classifier</h3>
                 <p> Advanced Logistic Regression Model that classifies tumors as malignant or benign. </p>
-                <div class="button-container"><a href="https://ai-diabetes.streamlit.app" target="_blank">Launch Model</a></div>
+                <div class="button-container"><a href="https://ai-tumor.streamlit.app" target="_blank">Launch AI</a></div>
             </div>
         </div>
     </div>
@@ -161,14 +162,22 @@
         createStars();
 
         // Phantom Wallet Logic
-        const connectButton = document.getElementById('
-        // ... (kaldığımız yerden devam)
+        const connectButton = document.getElementById('connectButton');
+        connectButton.addEventListener('click', async () => {
+            const isPhantomInstalled = window.solana && window.solana.isPhantom;
+            if (isPhantomInstalled) {
+                try {
+                    const response = await window.solana.connect();
+                    const walletAddress = response.publicKey.toString();
+                    const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+                    const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
+                    const solBalance = balance / 1000000000;
+                    
                     connectButton.innerText = `${solBalance.toFixed(3)} SOL | ${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
                     connectButton.style.background = "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)";
                     connectButton.style.boxShadow = "0 4px 15px rgba(74, 222, 128, 0.3)";
-                    
                 } catch (err) {
-                    console.error("Hata:", err);
+                    console.error("Error:", err);
                     connectButton.innerText = "Connection Failed";
                 }
             } else {
@@ -177,7 +186,7 @@
             }
         });
 
-        // Yıldız kayması efekti (opsiyonel ama şık durur)
+        // Shooting stars effect
         setInterval(() => {
             if (Math.random() > 0.7) {
                 const shooter = document.createElement('div');
