@@ -19,11 +19,11 @@ function createStars() {
     if (!container) return;
     container.innerHTML = ''; 
 
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 400; i++) {
         const star = document.createElement('div');
         star.className = 'star';
-        star.style.left = (Math.random() * 200 - 50) + '%';
-        star.style.top = (Math.random() * 100) + '%';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
         
         const size = Math.random() * 2.5 + 'px';
         star.style.width = size;
