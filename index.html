@@ -30,6 +30,7 @@
             box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
             animation: shooting-star 3s linear; opacity: 0;
         }
+
         header {
             background: rgba(10, 14, 39, 0.85); backdrop-filter: blur(15px);
             color: white; text-align: center; padding: 5rem 1rem;
@@ -49,19 +50,15 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             display: inline-block;
-            
-            animation: 
-                textGlow 3s ease-in-out infinite alternate,
-                shimmer 5s linear infinite;
-                
+            animation: textGlow 3s ease-in-out infinite alternate, shimmer 5s linear infinite;
             position: relative;
             z-index: 1;
             letter-spacing: 10px;
         }
 
         @keyframes textGlow {
-            from { filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.6)); }
-            to { filter: drop-shadow(0 0 25px rgba(240, 147, 251, 0.8)); }
+            from { filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.6)); letter-spacing: 10px; }
+            to { filter: drop-shadow(0 0 25px rgba(240, 147, 251, 0.8)); letter-spacing: 14px; }
         }
 
         @keyframes shimmer {
@@ -121,6 +118,16 @@
             filter: brightness(1.1);
         }
 
+        .iframe-container {
+            box-shadow: 0 0 25px rgba(102, 126, 234, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .iframe-container:hover {
+            box-shadow: 0 0 40px rgba(102, 126, 234, 0.4);
+            border-color: rgba(102, 126, 234, 0.6);
+        }
+
         footer { text-align: center; padding: 3rem 1rem; color: #718096; margin-top: 5rem; border-top: 1px solid rgba(255, 255, 255, 0.05); letter-spacing: 1px; }
     </style>
 </head>
@@ -148,7 +155,7 @@
             </div>
             <div class="project-card">
                 <h3>🧩 Maze Solver</h3>
-                <p>Visualizing DFS, BFS, and A* pathfinding algorithms navigating through generated complex mazes.</p>
+                <p>Visualizing DFS, BFS, and A* pathfinding algorithms navigating through complex mazes.</p>
                 <div class="button-container"><a href="https://appmazesolver.streamlit.app" target="_blank">View Logic</a></div>
             </div>
             <div class="project-card">
@@ -156,11 +163,21 @@
                 <p>An efficient backtracking algorithm that solves any Sudoku board instantly through recursive search.</p>
                 <div class="button-container"><a href="https://appsudokusolver.streamlit.app" target="_blank">Launch App</a></div>
             </div>
-            <div class="project-card">
-                <h3>🪐 Solar System</h3>
-                <p>Interactive 3D celestial visualization built with Three.js to explore planetary orbits and scales.</p>
-                <div class="button-container"><a href="https://ethernit14.github.io/Solar_System/" target="_blank">Explore Space</a></div>
+
+            <div class="project-card" style="grid-column: 1 / -1; margin-top: 2rem;">
+                <h3>🪐 Live Solar System Lab</h3>
+                <p>An interactive 3D celestial visualization built with Three.js, running directly within the Zenitith environment.</p>
+                <div class="iframe-container" style="margin-top: 1.5rem; border-radius: 15px; overflow: hidden; border: 1px solid rgba(102, 126, 234, 0.3); background: #000;">
+                    <iframe 
+                        src="https://ethernit14.github.io/Solar_System/" 
+                        width="100%" 
+                        height="600px" 
+                        style="border:none;" 
+                        title="Solar System Simulation">
+                    </iframe>
+                </div>
             </div>
+
             <div class="project-card">
                 <h3>💳 Phantom Wallet</h3>
                 <p>Secure Solana integration. Connect your Phantom wallet to view balances and asset data in real-time.</p>
@@ -189,7 +206,7 @@
     <script>
         function createStars() {
             const container = document.getElementById('stars1');
-            for (let i = 0; i < 250; i++) { // Increased star count for better background
+            for (let i = 0; i < 250; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 const size = Math.random() * 2.5;
@@ -212,7 +229,6 @@
                     const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
                     const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
                     const solBalance = balance / 1000000000;
-                    
                     connectButton.innerText = `${solBalance.toFixed(3)} SOL | ${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
                     connectButton.style.background = "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)";
                     connectButton.style.boxShadow = "0 0 20px rgba(74, 222, 128, 0.4)";
