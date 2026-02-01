@@ -3,6 +3,17 @@ function toggleMenu() {
     if (menu) menu.classList.toggle('active'); 
 }
 
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('sideMenu');
+    const hamburger = document.querySelector('.hamburger');
+    
+    if (menu && menu.classList.contains('active')) {
+        if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+            menu.classList.remove('active');
+        }
+    }
+});
+
 function createStars() {
     const container = document.getElementById('stars1') || document.getElementById('stars-container');
     if (!container) return;
