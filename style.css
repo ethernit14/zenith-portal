@@ -1,44 +1,36 @@
-/* Arka planı ve metni zorla siyah/beyaz yap */
+/* Temel Ayarlar */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
-    background-color: #0a0e27 !important;
-    color: #e0e0e0 !important;
-    margin: 0;
-    overflow-x: hidden;
+    background-color: #0a0e27 !important; /* Safari için zorunlu koyu arka plan */
+    color: #e0e0e0;
+    font-family: 'Segoe UI', sans-serif;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
+/* Arka Plan Yıldızlar */
 #stars-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
-    background: linear-gradient(to bottom, #0a0e27 0%, #1a1f3a 100%);
+    z-index: 0; /* Yıldızlar en arkada */
 }
 
-.star {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-    animation: twinkle 3s infinite;
+/* İçerik Katmanı - Chrome'da görünmemesinin sebebi buydu */
+.content-layer, .container {
+    position: relative;
+    z-index: 10; /* Yazılar yıldızların üstünde */
 }
 
-@keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-/* Menü Katmanı ve Hamburger */
+/* Hamburger Menü ve Yan Panel */
 .menu-container {
     position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 1001; /* Her şeyin üstünde */
-}
-
-.hamburger {
-    cursor: pointer;
-    background: rgba(102, 126, 234, 0.3);
-    padding: 10px;
-    border-radius: 8px;
+    z-index: 1000; /* Menü her şeyin üstünde */
 }
 
 .side-menu {
@@ -48,12 +40,20 @@ body {
     width: 280px;
     height: 100vh;
     background: #0d112b;
-    z-index: 1000;
-    transition: 0.4s ease;
+    transition: 0.4s ease-in-out;
+    z-index: 999;
     padding-top: 80px;
     border-right: 1px solid rgba(102, 126, 234, 0.3);
 }
 
 .side-menu.active {
     left: 0; /* Açıkken içeride */
+}
+
+.side-menu a {
+    display: block;
+    color: white;
+    padding: 20px 40px;
+    text-decoration: none;
+    letter-spacing: 2px;
 }
