@@ -1,8 +1,6 @@
 function toggleMenu() {
     const menu = document.getElementById('sideMenu');
-    if (menu) {
-        menu.classList.toggle('active'); 
-    }
+    if (menu) menu.classList.toggle('active'); 
 }
 
 function createStars() {
@@ -13,7 +11,6 @@ function createStars() {
     for (let i = 0; i < 200; i++) {
         const star = document.createElement('div');
         star.className = 'star';
-        
         star.style.left = (Math.random() * 200 - 50) + '%';
         star.style.top = (Math.random() * 100) + '%';
         
