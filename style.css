@@ -19,6 +19,7 @@ body {
     height: 200%;
     z-index: -1; 
     overflow: hidden; 
+    animation: rotateSky 150s linear infinite;
 }
 
 .star {
@@ -26,9 +27,7 @@ body {
     background: white;
     border-radius: 50%;
     opacity: 0.5;
-    transform-origin: center; 
     animation: twinkle var(--duration, 3s) infinite alternate ease-in-out,
-               rotateSky var(--speed, 100s) linear infinite;
     animation-delay: var(--twinkle-delay, 0s); 
 }
 
