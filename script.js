@@ -17,7 +17,7 @@ document.addEventListener('click', (e) => {
 });
 
 function createStars() {
-    const container = document.getElementById('stars1') || document.getElementById('stars-container');
+    const container = document.getElementById('stars-container');
     if (!container) return;
     container.innerHTML = ''; 
 
@@ -33,7 +33,6 @@ function createStars() {
         
         star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's'); 
         star.style.setProperty('--twinkle-delay', (Math.random() * 5) + 's'); 
-        star.style.setProperty('--speed', (Math.random() * 100 + 150) + 's'); 
         
         container.appendChild(star);
     }
