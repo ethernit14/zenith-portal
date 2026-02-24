@@ -119,7 +119,12 @@ h1 {
 }
 
 .projects-grid {
-    display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; 
+    gap: 30px; 
+    margin-top: 40px;
+    width: 100%
 }
 
 .project-card {
