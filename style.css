@@ -223,3 +223,36 @@ footer {
 .menu-container { position: fixed; top: 30px; left: 30px; z-index: 9999; }
 
 .side-menu.active { left: 0; }
+
+.video-container {
+    position: relative;
+    display: inline-block;
+}
+
+.hover-preview {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    width: 180px;  
+    height: 320px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 100;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.see-video-btn:hover + .hover-preview {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+
+.hover-preview iframe {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
