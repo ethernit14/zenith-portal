@@ -27,8 +27,7 @@ body {
     background: white;
     border-radius: 50%;
     opacity: 0.75;
-    animation: twinkle var(--duration, 3s) infinite alternate ease-in-out,
-    animation-delay: var(--twinkle-delay, 0s); 
+    animation: twinkle var(--duration, 3s) var(--twinkle-delay, 0s) infinite alternate ease-in-out;
 }
 
 @keyframes twinkle {
@@ -262,36 +261,35 @@ footer {
     object-fit: cover;
 }
 
-/* Info Button */
 .info-btn {
     position: fixed;
-    top: 16px;
-    right: 18px;
-    width: 60px;
-    height: 60px;
-    background: rgba(255,20,147,0.1);
-    border: 1px solid rgba(255,20,147,0.6);
+    top: 22px;
+    right: 22px;
+    width: 48px;
+    height: 48px;
+    background: rgba(240, 147, 251, 0.1);
+    border: 1px solid rgba(240, 147, 251, 0.2);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
     z-index: 9997;
     animation: pulse 2s ease-in-out infinite;
     transition: background 0.2s;
-    box-shadow: 0 0 10px rgba(255, 20, 147, 0.4), 0 0 20px rgba(255, 20, 147, 0.2);
-    color: rgb(255, 20, 147);
+    box-shadow: 0 0 10px rgba(240, 147, 251, 0.5);
+    color: #f093fb;
 }
 
 .info-btn:hover {
-    background: rgba(255, 20, 147, 0.2);
-    box-shadow: 0 0 16px rgba(255, 20, 147, 0.7), 0 0 32px rgba(255, 20, 147, 0.3);
+    background: rgba(240, 147, 251, 0.2);
+    box-shadow: 0 0 20px rgba(240, 147, 251, 0.7);
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(255,20,147,0.4), 0 0 20px rgba(255,20,147,0.2); }
-    50% { transform: scale(1.12); box-shadow: 0 0 18px rgba(255,20,147,0.7), 0 0 36px rgba(255,20,147,0.4); }
+    0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(240,147,251,0.4); }
+    50% { transform: scale(1.12); box-shadow: 0 0 20px rgba(240,147,251,0.7); }
 }
 
 .info-popup {
