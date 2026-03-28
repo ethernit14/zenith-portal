@@ -277,7 +277,7 @@ footer {
     justify-content: center;
     font-size: 18px;
     cursor: pointer;
-    z-index: 1000;
+    z-index: 9997;
     animation: pulse 2s ease-in-out infinite;
     transition: background 0.2s;
     box-shadow: 0 0 10px rgba(255, 20, 147, 0.4), 0 0 20px rgba(255, 20, 147, 0.2);
