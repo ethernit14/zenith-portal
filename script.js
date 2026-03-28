@@ -1,18 +1,15 @@
 function toggleMenu() {
     const menu = document.getElementById('sideMenu');
-    if (menu) {
-        menu.classList.toggle('active'); 
-    }
+    if (menu) menu.classList.toggle('active');
 }
 
 function toggleInfo(e) {
     e.stopPropagation();
     const popup = document.getElementById('infoPopup');
-    popup.classList.toggle('open');
+    if (popup) popup.classList.toggle('open');
 }
 
 document.addEventListener('click', (e) => {
-    // Menu kapat
     const menu = document.getElementById('sideMenu');
     const hamburger = document.querySelector('.hamburger');
     if (menu && menu.classList.contains('active')) {
@@ -21,7 +18,6 @@ document.addEventListener('click', (e) => {
         }
     }
 
-    // Info popup kapat
     const popup = document.getElementById('infoPopup');
     const btn = document.querySelector('.info-btn');
     if (popup && btn) {
@@ -34,7 +30,7 @@ document.addEventListener('click', (e) => {
 function createStars() {
     const container = document.getElementById('stars-container');
     if (!container) return;
-    container.innerHTML = ''; 
+    container.innerHTML = '';
     for (let i = 0; i < 400; i++) {
         const star = document.createElement('div');
         star.className = 'star';
@@ -43,8 +39,8 @@ function createStars() {
         const size = Math.random() * 2.5 + 'px';
         star.style.width = size;
         star.style.height = size;
-        star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's'); 
-        star.style.setProperty('--twinkle-delay', (Math.random() * 5) + 's'); 
+        star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+        star.style.setProperty('--twinkle-delay', (Math.random() * 5) + 's');
         container.appendChild(star);
     }
 }
@@ -53,4 +49,21 @@ function createShootingStar() {
     const container = document.getElementById('stars-container');
     if (!container) return;
     const star = document.createElement('div');
-    star.className = 'shooting-star anim
+    star.className = 'shooting-star animate-shooting';
+    star.style.top = Math.random() * 40 + '%';
+    star.style.left = (Math.random() * 50 + 50) + '%';
+    container.appendChild(star);
+    setTimeout(() => star.remove(), 2000);
+}
+
+function startShootingStars() {
+    setTimeout(() => {
+        createShootingStar();
+        startShootingStars();
+    }, Math.random() * 8000 + 4000);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    createStars();
+    startShootingStars();
+});
