@@ -60,3 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
     createStars();
     startShootingStars();
 });
+function toggleInfo() {
+  const popup = document.getElementById('infoPopup');
+  popup.classList.toggle('open');
+}
+
+document.addEventListener('click', function(e) {
+  const popup = document.getElementById('infoPopup');
+  const btn = document.querySelector('.info-btn');
+  if (!popup.contains(e.target) && !btn.contains(e.target)) {
+    popup.classList.remove('open');
+  }
+});
