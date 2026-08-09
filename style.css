@@ -362,17 +362,21 @@ footer {
 }
 .photo-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: 1fr 1.15fr 1fr;
+    grid-template-rows: 300px 300px;
+    grid-template-areas:
+        "a c b"
+        "d c e";
     gap: 20px;
     width: 100%;
-    max-width: 1100px;
+    max-width: 1300px;
     margin: 0 auto 70px;
 }
 .photo-gallery img {
     width: 100%;
-    height: 220px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 14px;
+    border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     transition: 0.4s ease;
@@ -382,6 +386,22 @@ footer {
     transform: translateY(-8px);
     border-color: #f093fb;
     box-shadow: 0 0 30px rgba(240, 147, 251, 0.3);
+}
+.photo-gallery .g-a { grid-area: a; }
+.photo-gallery .g-b { grid-area: b; }
+.photo-gallery .g-c { grid-area: c; }
+.photo-gallery .g-d { grid-area: d; }
+.photo-gallery .g-e { grid-area: e; }
+.photo-gallery .g-c {
+    border-color: rgba(240, 147, 251, 0.4);
+    box-shadow: 0 0 40px rgba(240, 147, 251, 0.2);
+}
+@media (max-width: 800px) {
+    .photo-gallery {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(5, 260px);
+        grid-template-areas: "a" "c" "b" "d" "e";
+    }
 }
 .wiring-panel {
     background: rgba(255, 255, 255, 0.03);
