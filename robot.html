@@ -20,12 +20,71 @@
             <a href="robot.html">Mini-Bug Robot</a>
         </nav>
     </div>
+
     <div class="content-layer">
         <h2 class="section-title">🕷️ Mini-Bug Robot</h2>
-        <p style="text-align:center; color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto;">
-            Page under construction — build log, schematics, and demo coming soon.
-        </p>
+        <p class="robot-tagline">A four-legged desktop robot with no 3D-printed chassis — just servos, silicone, and duct tape holding it all together, walking under Xbox control over Bluetooth.</p>
+
+        <div class="video-embed-wrap">
+            <div class="ratio">
+                <iframe src="https://www.youtube.com/embed/-yd2d086-7c" title="Mini-Bug Robot demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <p class="build-story">The frame isn't really a frame. Four <strong>MG90S servos</strong> are screwed directly to each other and reinforced with silicone and duct tape — there's no printed body underneath. Servo horns plus a matching plastic bracket give each leg two points of articulation, 8 horns in total.</p>
+        <p class="build-story">The electronics stack on top of that: an <strong>ESP32-WROOM-U</strong> siliconed underneath the body, a <strong>PCA9685</strong> PWM driver siliconed above it, and an <strong>LM2596</strong> buck converter siliconed on top of that. Two Li-ion cells sit on either side of the driver board, wired in series for 7.4V.</p>
+
+        <div class="parts-tags">
+            <span class="tech-tag">4× MG90S Servo</span>
+            <span class="tech-tag">ESP32-WROOM-U</span>
+            <span class="tech-tag">PCA9685 PWM Driver</span>
+            <span class="tech-tag">LM2596 Buck Converter</span>
+            <span class="tech-tag">2× Li-ion 3.7V 2200mAh</span>
+            <span class="tech-tag">3300µF 35V Capacitor</span>
+        </div>
+
+        <div class="photo-gallery">
+            <img src="assets/img/robot-hero.jpg" alt="Mini-Bug Robot standing, front-angled view" loading="lazy">
+            <img src="assets/img/robot-front.jpg" alt="Mini-Bug Robot close-up front view" loading="lazy">
+            <img src="assets/img/robot-detail.jpg" alt="Mini-Bug Robot wiring and electronics stack detail" loading="lazy">
+            <img src="assets/img/robot-esp32.jpg" alt="Mini-Bug Robot side view showing ESP32-WROOM module" loading="lazy">
+            <img src="assets/img/robot-back.jpg" alt="Mini-Bug Robot rear view" loading="lazy">
+        </div>
+
+        <h2 class="section-title robot-section-gap">⚡ Circuit</h2>
+        <p class="build-story">Two Li-ion cells in series (7.4V) feed an LM2596 buck converter set to output 5V, which powers both the ESP32 and the PCA9685's servo rail. The PCA9685 gets its logic power from the ESP32's 3.3V line and talks over I2C — GPIO22 to SDA, GPIO23 to SCL. All four servos run off PCA9685 channels 4 through 7, with a 3300µF capacitor in parallel on the power rail to smooth out the current draw when every servo moves at once.</p>
+
+        <div class="wiring-panel">
+            <img src="assets/wiring-diagram.svg" alt="Wiring diagram: batteries to LM2596 to ESP32 and PCA9685 to four servos" style="width:100%; height:auto; display:block;">
+        </div>
+
+        <h2 class="section-title robot-section-gap">🎮 Control Scheme</h2>
+        <p class="build-story">Movement is driven by an Xbox controller paired over Bluetooth. The main loop checks button and trigger state every frame and calls the matching motion function — each one just moves the "right" or "left" pair of servos in a set pattern.</p>
+
+        <div class="control-table-wrap">
+            <table class="control-table">
+                <thead>
+                    <tr><th>Input</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>RT</td><td>Right-side servos step forward</td></tr>
+                    <tr><td>LT</td><td>Left-side servos step forward</td></tr>
+                    <tr><td>RB</td><td>Right-side servos step backward</td></tr>
+                    <tr><td>LB</td><td>Left-side servos step backward</td></tr>
+                    <tr><td>A</td><td>Forward walk (RT + LT combined)</td></tr>
+                    <tr><td>B</td><td>Backward walk (RB + LB combined)</td></tr>
+                    <tr><td>X</td><td>Reset to default stance (90°)</td></tr>
+                    <tr><td>Y</td><td>Lying position</td></tr>
+                    <tr><td>D-Pad ↑</td><td>Dance</td></tr>
+                    <tr><td>D-Pad ↓</td><td>Stand on rear legs</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="control-note">To come back down from the rear-leg stand: press <strong>Y</strong> (lying), then <strong>X</strong> (default).</p>
+
+        <a href="https://github.com/ethernit14/Mini-Bug-Robot/tree/main" target="_blank" class="repo-link">View Full Firmware on GitHub</a>
     </div>
+
     <footer>
         <p>&copy; 2026 / Doruk Orak / St. Georg Austrian High School</p>
         <p>Contact: <a href="mailto:dorak2293@gmail.com" style="color:#667eea; text-decoration:none;">dorak2293@gmail.com</a> </p>
