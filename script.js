@@ -2,13 +2,11 @@ function toggleMenu() {
     const menu = document.getElementById('sideMenu');
     if (menu) menu.classList.toggle('active');
 }
-
 function toggleInfo(e) {
     e.stopPropagation();
     const popup = document.getElementById('infoPopup');
     if (popup) popup.classList.toggle('open');
 }
-
 document.addEventListener('click', (e) => {
     const menu = document.getElementById('sideMenu');
     const hamburger = document.querySelector('.hamburger');
@@ -17,7 +15,6 @@ document.addEventListener('click', (e) => {
             menu.classList.remove('active');
         }
     }
-
     const popup = document.getElementById('infoPopup');
     const btn = document.querySelector('.info-btn');
     if (popup && btn) {
@@ -26,7 +23,6 @@ document.addEventListener('click', (e) => {
         }
     }
 });
-
 function createStars() {
     const container = document.getElementById('stars-container');
     if (!container) return;
@@ -44,7 +40,6 @@ function createStars() {
         container.appendChild(star);
     }
 }
-
 function createShootingStar() {
     const container = document.getElementById('stars-container');
     if (!container) return;
@@ -55,14 +50,12 @@ function createShootingStar() {
     container.appendChild(star);
     setTimeout(() => star.remove(), 2000);
 }
-
 function startShootingStars() {
     setTimeout(() => {
         createShootingStar();
         startShootingStars();
     }, Math.random() * 8000 + 4000);
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     createStars();
     startShootingStars();
