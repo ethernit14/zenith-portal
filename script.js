@@ -59,10 +59,7 @@ function startShootingStars() {
 document.addEventListener('DOMContentLoaded', () => {
     createStars();
     startShootingStars();
-    initVideoPreviews();
-});
-function initVideoPreviews() {
-    document.querySelectorAll('.video-container').forEach((container) => {
+});    document.querySelectorAll('.video-container').forEach((container) => {
         const iframe = container.querySelector('.hover-preview iframe');
         if (!iframe || !iframe.dataset.src) return;
         container.addEventListener('mouseenter', () => {
