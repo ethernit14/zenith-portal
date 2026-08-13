@@ -47,23 +47,24 @@
             <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203344.jpg">
         </div>
         <h2 class="section-title robot-section-gap">⚡ Circuit</h2>
-        <p class="build-story">Two Li-ion cells in series (7.4V) feed an XL4015 buck converter set to output 5V, which powers both the ESP32 and the PCA9685's servo rail. A 1N4001 diode sits in series on the 5V output line for reverse-polarity protection, and a 100µF capacitor bridges the ESP32's 5V and GND pins to smooth its supply. The PCA9685 gets its logic power from the ESP32's 3.3V line and talks over I2C — GPIO22 to SDA, GPIO23 to SCL. All four servos run off PCA9685 channels 4 through 7, with a 3300µF capacitor in parallel on the power rail to smooth out the current draw when every servo moves at once.</p>
+        <p class="build-story">Two Li-ion cells in series (7.4V) feed an XL4015 buck converter set to output 5V, which powers both the ESP32 and the PCA9685's servo rail. A 1N4001 diode sits in series on the branch feeding the ESP32's 5V pin for reverse-polarity protection, and a 100µF capacitor bridges the ESP32's 5V and GND pins to smooth its supply. The PCA9685 gets its logic power from the ESP32's 3.3V line and talks over I2C — GPIO22 to SDA, GPIO23 to SCL. All four servos run off PCA9685 channels 4 through 7, with a 3300µF capacitor in parallel on the power rail to smooth out the current draw when every servo moves at once.</p>
         <div class="wiring-panel">
             <svg viewBox="0 0 1000 580" xmlns="http://www.w3.org/2000/svg" role="img">
     <title>Mini-Bug Robot wiring overview</title>
-    <desc>Two Li-ion cells in series feed an XL4015 buck converter stepping 7.4V down to 5V. A 1N4001 diode sits in series on the 5V output line for reverse-polarity protection. A 100 microfarad capacitor bridges the ESP32's 5V and GND pins. The 5V rail powers both the ESP32 and the PCA9685 servo driver. The ESP32 supplies 3.3V logic power and I2C (GPIO22 to SDA, GPIO23 to SCL) to the PCA9685, which drives four MG90S servos on channels 4-7. A 3300 microfarad capacitor sits in parallel on the PCA9685 power rail.</desc>
+    <desc>Two Li-ion cells in series feed an XL4015 buck converter stepping 7.4V down to 5V. The 5V rail powers both the ESP32 and the PCA9685 servo driver. A 1N4001 diode sits in series on the branch feeding the ESP32's 5V pin for reverse-polarity protection, and a 100 microfarad capacitor bridges the ESP32's 5V and GND pins. The ESP32 supplies 3.3V logic power and I2C (GPIO22 to SDA, GPIO23 to SCL) to the PCA9685, which drives four MG90S servos on channels 4-7. A 3300 microfarad capacitor sits in parallel on the PCA9685 power rail.</desc>
     <!-- power bus -->
     <line x1="220" y1="85" x2="250" y2="85" stroke="#667eea" stroke-width="2"/>
     <line x1="340" y1="85" x2="370" y2="85" stroke="#667eea" stroke-width="2"/>
     <line x1="470" y1="140" x2="470" y2="180" stroke="#667eea" stroke-width="2"/>
-    <!-- 1N4001 diode on the 5V output line -->
-    <polygon points="460,138 480,138 470,152" fill="#ffd166"/>
-    <line x1="460" y1="152" x2="480" y2="152" stroke="#ffd166" stroke-width="2.5"/>
-    <text x="490" y="148" font-size="11" fill="#ffd166" font-weight="600">1N4001</text>
     <line x1="250" y1="180" x2="670" y2="180" stroke="#667eea" stroke-width="2"/>
-    <line x1="250" y1="180" x2="250" y2="250" stroke="#667eea" stroke-width="2"/>
     <line x1="670" y1="180" x2="670" y2="250" stroke="#667eea" stroke-width="2"/>
     <text x="480" y="198" font-size="12" fill="#667eea" font-weight="600">5V / GND</text>
+    <!-- 1N4001 diode right before the ESP32 5V pin -->
+    <line x1="250" y1="180" x2="250" y2="225" stroke="#667eea" stroke-width="2"/>
+    <polygon points="240,225 260,225 250,239" fill="#ffd166"/>
+    <line x1="240" y1="239" x2="260" y2="239" stroke="#ffd166" stroke-width="2.5"/>
+    <line x1="250" y1="239" x2="250" y2="250" stroke="#667eea" stroke-width="2"/>
+    <text x="265" y="236" font-size="11" fill="#ffd166" font-weight="600">1N4001</text>
     <!-- 100uF capacitor across ESP32 5V/GND -->
     <line x1="250" y1="218" x2="150" y2="218" stroke="#667eea" stroke-width="1.5" stroke-dasharray="3,3"/>
     <rect x="10" y="188" width="140" height="60" rx="10" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
