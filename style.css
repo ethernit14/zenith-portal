@@ -637,3 +637,71 @@ footer {
     border-radius: 3px;
     display: inline-block;
 }
+
+/* ---- ML Predictor widgets (Diabetes, Tumor, etc.) ---- */
+.predict-form {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+.predict-field label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 8px;
+}
+.predict-field label span.value {
+    color: #f093fb;
+    font-weight: 700;
+}
+.predict-field input[type="range"] {
+    width: 100%;
+    accent-color: #f093fb;
+}
+.predict-result {
+    width: 100%;
+    max-width: 480px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    display: none;
+}
+.predict-result.show { display: block; }
+.predict-result .label {
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 8px;
+}
+.predict-result .value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #f093fb, #667eea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.predict-result .sub {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+.predict-bar-track {
+    margin-top: 16px;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+.predict-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #f093fb);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
