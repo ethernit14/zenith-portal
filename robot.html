@@ -20,53 +20,55 @@
             <a href="robot.html">Mini-Bug Robot</a>
         </nav>
     </div>
-
     <div class="content-layer">
         <h2 class="section-title">🕷️ Mini-Bug Robot</h2>
         <p class="robot-tagline">A four-legged desktop robot with no 3D-printed chassis — just servos, silicone, and duct tape holding it all together, walking under Xbox control over Bluetooth.</p>
-
         <div class="video-embed-wrap">
             <div class="ratio">
                 <iframe src="https://www.youtube.com/embed/-yd2d086-7c" title="Mini-Bug Robot demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
-
         <p class="build-story">The frame isn't really a frame. Four <strong>MG90S servos</strong> are screwed directly to each other and reinforced with silicone and duct tape — there's no printed body underneath. Each leg gets a servo horn plus a matching plastic attachment that extends and curves it into an actual leg shape, 8 horns in total.</p>
-        <p class="build-story">The electronics stack on top of that: an <strong>ESP32-WROOM-32U</strong> siliconed underneath the body, a <strong>PCA9685</strong> PWM driver siliconed above it, and an <strong>LM2596</strong> buck converter siliconed on top of that. Two Li-ion cells sit on either side of the driver board, wired in series for 7.4V.</p>
-
+        <p class="build-story">The electronics stack on top of that: an <strong>ESP32-WROOM-32U</strong> siliconed underneath the body, a <strong>PCA9685</strong> PWM driver siliconed above it, and an <strong>XL4015</strong> buck converter siliconed on top of that. Two Li-ion cells sit on either side of the driver board, wired in series for 7.4V. A <strong>1N4001</strong> diode now sits in series on the 5V line for reverse-polarity protection, and a <strong>100µF capacitor</strong> bridges the ESP32's 5V and GND legs to smooth its supply.</p>
         <div class="parts-tags">
             <span class="tech-tag">4× MG90S Servo</span>
             <span class="tech-tag">ESP32-WROOM-32U</span>
             <span class="tech-tag">PCA9685 PWM Driver</span>
-            <span class="tech-tag">LM2596 Buck Converter</span>
+            <span class="tech-tag">XL4015 Buck Converter</span>
             <span class="tech-tag">2× Li-ion 3.7V 2200mAh</span>
+            <span class="tech-tag">1N4001 Diode</span>
+            <span class="tech-tag">100µF Capacitor</span>
             <span class="tech-tag">3300µF 35V Capacitor</span>
         </div>
-
         <div class="photo-gallery">
             <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203341.jpg">
             <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203342.jpg">
             <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203343.jpg">
             <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203344.jpg">
         </div>
-
         <h2 class="section-title robot-section-gap">⚡ Circuit</h2>
-        <p class="build-story">Two Li-ion cells in series (7.4V) feed an LM2596 buck converter set to output 5V, which powers both the ESP32 and the PCA9685's servo rail. The PCA9685 gets its logic power from the ESP32's 3.3V line and talks over I2C — GPIO22 to SDA, GPIO23 to SCL. All four servos run off PCA9685 channels 4 through 7, with a 3300µF capacitor in parallel on the power rail to smooth out the current draw when every servo moves at once.</p>
-
+        <p class="build-story">Two Li-ion cells in series (7.4V) feed an XL4015 buck converter set to output 5V, which powers both the ESP32 and the PCA9685's servo rail. A 1N4001 diode sits in series on the 5V output line for reverse-polarity protection, and a 100µF capacitor bridges the ESP32's 5V and GND pins to smooth its supply. The PCA9685 gets its logic power from the ESP32's 3.3V line and talks over I2C — GPIO22 to SDA, GPIO23 to SCL. All four servos run off PCA9685 channels 4 through 7, with a 3300µF capacitor in parallel on the power rail to smooth out the current draw when every servo moves at once.</p>
         <div class="wiring-panel">
             <svg viewBox="0 0 1000 580" xmlns="http://www.w3.org/2000/svg" role="img">
     <title>Mini-Bug Robot wiring overview</title>
-    <desc>Two Li-ion cells in series feed an LM2596 buck converter stepping 7.4V down to 5V, which powers both the ESP32 and the PCA9685 servo driver. The ESP32 supplies 3.3V logic power and I2C (GPIO22 to SDA, GPIO23 to SCL) to the PCA9685, which drives four MG90S servos on channels 4-7. A 3300 microfarad capacitor sits in parallel on the PCA9685 power rail.</desc>
-
+    <desc>Two Li-ion cells in series feed an XL4015 buck converter stepping 7.4V down to 5V. A 1N4001 diode sits in series on the 5V output line for reverse-polarity protection. A 100 microfarad capacitor bridges the ESP32's 5V and GND pins. The 5V rail powers both the ESP32 and the PCA9685 servo driver. The ESP32 supplies 3.3V logic power and I2C (GPIO22 to SDA, GPIO23 to SCL) to the PCA9685, which drives four MG90S servos on channels 4-7. A 3300 microfarad capacitor sits in parallel on the PCA9685 power rail.</desc>
     <!-- power bus -->
     <line x1="220" y1="85" x2="250" y2="85" stroke="#667eea" stroke-width="2"/>
     <line x1="340" y1="85" x2="370" y2="85" stroke="#667eea" stroke-width="2"/>
     <line x1="470" y1="140" x2="470" y2="180" stroke="#667eea" stroke-width="2"/>
+    <!-- 1N4001 diode on the 5V output line -->
+    <polygon points="460,152 480,152 470,166" fill="#ffd166"/>
+    <line x1="460" y1="166" x2="480" y2="166" stroke="#ffd166" stroke-width="2.5"/>
+    <text x="490" y="163" font-size="11" fill="#ffd166" font-weight="600">1N4001</text>
     <line x1="250" y1="180" x2="670" y2="180" stroke="#667eea" stroke-width="2"/>
     <line x1="250" y1="180" x2="250" y2="250" stroke="#667eea" stroke-width="2"/>
     <line x1="670" y1="180" x2="670" y2="250" stroke="#667eea" stroke-width="2"/>
     <text x="480" y="165" font-size="12" fill="#667eea" font-weight="600">5V / GND</text>
-
+    <!-- 100uF capacitor across ESP32 5V/GND -->
+    <line x1="250" y1="218" x2="150" y2="218" stroke="#ffd166" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <rect x="10" y="188" width="140" height="60" rx="10" fill="rgba(255,255,255,0.04)" stroke="rgba(255,209,102,0.4)" stroke-width="1.5"/>
+    <text x="80" y="213" text-anchor="middle" font-size="13" font-weight="600" fill="#ffd166">100µF</text>
+    <text x="80" y="231" text-anchor="middle" font-size="10" fill="#8892b0">ESP32 5V/GND</text>
     <!-- logic bus between ESP32 and PCA9685 -->
     <line x1="360" y1="270" x2="560" y2="270" stroke="#f093fb" stroke-width="1.5" stroke-dasharray="5,4"/>
     <line x1="360" y1="295" x2="560" y2="295" stroke="#f093fb" stroke-width="1.5" stroke-dasharray="5,4"/>
@@ -74,77 +76,64 @@
     <text x="460" y="264" font-size="11" fill="#f093fb" text-anchor="middle">3V3 (logic)</text>
     <text x="460" y="289" font-size="11" fill="#f093fb" text-anchor="middle">GPIO22 → SDA</text>
     <text x="460" y="314" font-size="11" fill="#f093fb" text-anchor="middle">GPIO23 → SCL</text>
-
     <!-- capacitor link -->
     <line x1="780" y1="295" x2="820" y2="295" stroke="#667eea" stroke-width="2" stroke-dasharray="3,3"/>
     <text x="785" y="240" font-size="11" fill="#8892b0">parallel</text>
-
     <!-- PCA9685 to servos -->
     <line x1="670" y1="340" x2="245" y2="410" stroke="#f093fb" stroke-width="1.5"/>
     <line x1="670" y1="340" x2="425" y2="410" stroke="#f093fb" stroke-width="1.5"/>
     <line x1="670" y1="340" x2="605" y2="410" stroke="#f093fb" stroke-width="1.5"/>
     <line x1="670" y1="340" x2="785" y2="410" stroke="#f093fb" stroke-width="1.5"/>
-
     <!-- Battery -->
     <rect x="20" y="40" width="200" height="90" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
     <text x="120" y="75" text-anchor="middle" font-size="15" font-weight="600" fill="#e0e0e0">2× Li-ion 3.7V</text>
     <text x="120" y="98" text-anchor="middle" font-size="12" fill="#8892b0">2200mAh, series</text>
     <text x="120" y="118" text-anchor="middle" font-size="12" fill="#667eea">→ 7.4V</text>
-
     <!-- Switch -->
     <rect x="250" y="65" width="90" height="40" rx="10" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
     <text x="295" y="90" text-anchor="middle" font-size="12" font-weight="600" fill="#e0e0e0">ON / OFF</text>
-
-    <!-- LM2596 -->
+    <!-- XL4015 -->
     <rect x="370" y="30" width="200" height="110" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
-    <text x="470" y="65" text-anchor="middle" font-size="15" font-weight="600" fill="#e0e0e0">LM2596</text>
+    <text x="470" y="65" text-anchor="middle" font-size="15" font-weight="600" fill="#e0e0e0">XL4015</text>
     <text x="470" y="88" text-anchor="middle" font-size="12" fill="#8892b0">Buck Converter</text>
     <text x="470" y="110" text-anchor="middle" font-size="12" fill="#667eea">7.4V → 5V</text>
-
     <!-- ESP32 -->
     <rect x="140" y="250" width="220" height="90" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
     <text x="250" y="288" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">ESP32-WROOM-32U</text>
     <text x="250" y="310" text-anchor="middle" font-size="12" fill="#8892b0">Bluetooth + control logic</text>
-
     <!-- PCA9685 -->
     <rect x="560" y="250" width="220" height="90" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
     <text x="670" y="288" text-anchor="middle" font-size="15" font-weight="600" fill="#e0e0e0">PCA9685</text>
     <text x="670" y="310" text-anchor="middle" font-size="12" fill="#8892b0">16-ch PWM driver</text>
-
     <!-- Capacitor -->
     <rect x="820" y="248" width="160" height="94" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
     <text x="900" y="278" text-anchor="middle" font-size="13" font-weight="600" fill="#e0e0e0">3300µF 35V</text>
     <text x="900" y="298" text-anchor="middle" font-size="11" fill="#8892b0">smooths servo</text>
     <text x="900" y="314" text-anchor="middle" font-size="11" fill="#8892b0">rail under load</text>
-
     <!-- Servos -->
     <rect x="170" y="410" width="150" height="70" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
     <text x="245" y="440" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">CH 4</text>
     <text x="245" y="460" text-anchor="middle" font-size="11" fill="#8892b0">MG90S</text>
-
     <rect x="350" y="410" width="150" height="70" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
     <text x="425" y="440" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">CH 5</text>
     <text x="425" y="460" text-anchor="middle" font-size="11" fill="#8892b0">MG90S</text>
-
     <rect x="530" y="410" width="150" height="70" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
     <text x="605" y="440" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">CH 6</text>
     <text x="605" y="460" text-anchor="middle" font-size="11" fill="#8892b0">MG90S</text>
-
     <rect x="710" y="410" width="150" height="70" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
     <text x="785" y="440" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">CH 7</text>
     <text x="785" y="460" text-anchor="middle" font-size="11" fill="#8892b0">MG90S</text>
-
     <!-- legend -->
     <line x1="300" y1="530" x2="340" y2="530" stroke="#667eea" stroke-width="2"/>
     <text x="350" y="534" font-size="12" fill="#8892b0">Power (V+ / GND)</text>
     <line x1="560" y1="530" x2="600" y2="530" stroke="#f093fb" stroke-width="1.5" stroke-dasharray="5,4"/>
     <text x="610" y="534" font-size="12" fill="#8892b0">Logic / I2C / PWM</text>
+    <line x1="560" y1="555" x2="600" y2="555" stroke="#ffd166" stroke-width="2" stroke-dasharray="4,3"/>
+    <text x="610" y="559" font-size="12" fill="#8892b0">New: diode / cap</text>
 </svg>
         </div>
-
         <h2 class="section-title robot-section-gap">🎮 Control Scheme</h2>
         <p class="build-story">Movement is driven by an Xbox controller paired over Bluetooth. The main loop checks button and trigger state every frame and calls the matching motion function — each one just moves the "right" or "left" pair of servos in a set pattern.</p>
-
         <div class="control-table-wrap">
             <table class="control-table">
                 <thead>
@@ -165,10 +154,8 @@
             </table>
         </div>
         <p class="control-note">To come back down from the rear-leg stand: press <strong>Y</strong> (lying), then <strong>X</strong> (default).</p>
-
         <a href="https://github.com/ethernit14/Mini-Bug-Robot/tree/main" target="_blank" class="repo-link">View Full Firmware on GitHub</a>
     </div>
-
     <footer>
         <p>&copy; 2026 / Doruk Orak / St. Georg Austrian High School</p>
         <p>Contact: <a href="mailto:dorak2293@gmail.com" style="color:#667eea; text-decoration:none;">dorak2293@gmail.com</a> </p>
