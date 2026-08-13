@@ -171,7 +171,6 @@ h1 {
     line-height: 1;
     z-index: 10000;
 }
-
 .close-menu:hover {
     color: #fff;
     transform: scale(1.1);
@@ -282,7 +281,6 @@ footer {
 .info-links a:hover {
   background: rgba(102,126,234,0.15);
 }
-
 /* ---- Robot project page ---- */
 .robot-tagline {
     text-align: center;
@@ -442,3 +440,200 @@ footer {
     letter-spacing: 1px;
 }
 .robot-section-gap { margin-top: 20px; }
+
+/* ---- In-site game/app widgets (Tic-Tac-Toe, Sudoku, Maze, etc.) ---- */
+.app-tagline {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 40px;
+    color: #a0aec0;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+.app-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 10px auto 30px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.app-status {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #f093fb;
+    text-align: center;
+    min-height: 1.5em;
+}
+.ttt-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 1 / 1;
+}
+.ttt-cell {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(2rem, 8vw, 3rem);
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+    user-select: none;
+}
+.ttt-cell:hover:not(.filled) {
+    border-color: #f093fb;
+    background: rgba(240, 147, 251, 0.08);
+}
+.ttt-cell.filled { cursor: default; }
+.ttt-cell.x { color: #667eea; }
+.ttt-cell.o { color: #f093fb; }
+.app-btn {
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #667eea, #f093fb);
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: 0.3s ease;
+}
+.app-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(240, 147, 251, 0.35);
+}
+.app-btn.secondary {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.app-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+.app-btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* ---- Sudoku Solver ---- */
+.sudoku-board {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 2px;
+    width: 100%;
+    max-width: 380px;
+    aspect-ratio: 1 / 1;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 2px;
+}
+.sudoku-cell {
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 39, 0.6);
+    border: none;
+    color: #e0e0e0;
+    text-align: center;
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    font-weight: 600;
+    outline: none;
+}
+.sudoku-cell.given { color: #667eea; }
+.sudoku-cell.solved { color: #f093fb; }
+.sudoku-cell.invalid { background: rgba(245, 87, 108, 0.25); }
+.sudoku-cell.border-right { border-right: 2px solid rgba(255, 255, 255, 0.35); }
+.sudoku-cell.border-bottom { border-bottom: 2px solid rgba(255, 255, 255, 0.35); }
+
+/* ---- Maze Solver ---- */
+.app-panel.maze-panel { max-width: 720px; }
+.maze-hint {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.55);
+    text-align: center;
+    max-width: 500px;
+}
+.maze-mode-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+.maze-mode-btn {
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+.maze-mode-btn.active {
+    background: linear-gradient(135deg, #667eea, #f093fb);
+    border-color: transparent;
+    color: white;
+    font-weight: 700;
+}
+.maze-grid {
+    display: grid;
+    width: 100%;
+    max-width: 700px;
+    aspect-ratio: 25 / 15;
+    gap: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.maze-cell {
+    background: rgba(10, 14, 39, 0.6);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.maze-cell.wall { background: rgba(255, 255, 255, 0.35); }
+.maze-cell.start { background: #667eea; }
+.maze-cell.end { background: #f093fb; }
+.maze-cell.visited { background: rgba(102, 126, 234, 0.35); }
+.maze-cell.path { background: #ffd166; }
+.maze-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+.maze-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.maze-legend i {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+}
