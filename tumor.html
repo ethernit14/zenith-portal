@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://media.istockphoto.com/id/1324569050/tr/vektör/z-letter-liner-logo-design.jpg?s=612x612&w=0&k=20&c=T8AiugxFr90SvvL8mb-gBpHij5vJubiH-Y7T4OcjiHA=">
+    <title>Zenitith | Tumor Classifier</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="stars-container"><div class="stars" id="stars1"></div></div>
+    <div class="menu-container">
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+        <nav class="side-menu" id="sideMenu">
+            <div class="close-menu" onclick="toggleMenu()">&times;</div>
+            <a href="index.html">Main Menu</a>
+            <a href="projects.html">Projects</a>
+            <a href="robot.html">Mini-Bug Robot</a>
+        </nav>
+    </div>
+    <div class="content-layer">
+        <h2 class="section-title">🧬 Tumor Classifier</h2>
+        <p class="app-tagline">Logistic Regression with polynomial feature engineering (size², size×growth, age×toughness), L2-regularized and trained via manual Gradient Descent — runs entirely in your browser using the trained weights.</p>
+        <div class="app-panel">
+            <form class="predict-form" id="predictForm" onsubmit="return false;"></form>
+            <button class="app-btn" id="predictBtn">Classify</button>
+            <div class="predict-result" id="predictResult">
+                <div class="label">Prediction</div>
+                <div class="value" id="predictValue">—</div>
+                <div class="sub" id="predictSub"></div>
+                <div class="predict-bar-track"><div class="predict-bar-fill" id="predictBarFill" style="width:0%"></div></div>
+            </div>
+        </div>
+        <p class="maze-hint" style="margin-bottom:30px;">Educational demo only — not a medical diagnostic tool.</p>
+        <a href="projects.html" class="app-btn secondary" style="margin-bottom:60px; text-decoration:none; display:inline-block;">Back to Projects</a>
+    </div>
+    <footer>
+        <p>&copy; 2026 / Doruk Orak / St. Georg Austrian High School</p>
+        <p>Contact: <a href="mailto:dorak2293@gmail.com" style="color:#667eea; text-decoration:none;">dorak2293@gmail.com</a> </p>
+    </footer>
+    <div class="info-btn" onclick="toggleInfo(event)">ℹ</div>
+    <div class="info-popup" id="infoPopup">
+        <div class="info-popup-inner">
+            <h3>About Me</h3>
+            <p>I'm <strong>Doruk Orak</strong>, a 12th grade student at Sankt Georg Austrian High School in Istanbul.</p>
+            <p>My interests span <strong>hardware design</strong>, <strong>artificial intelligence</strong>, <strong>programming</strong>, and <strong>physics</strong>. Connecting the world of intelligent systems with physical circuits.</p>
+            <ul>
+                <li>🥇 Bebras Informatik — 1st Place, Perfect Score (2024)</li>
+                <li>📜 Andrew Ng ML Specialization — DeepLearning.AI</li>
+                <li>🎯 Targeting TUM Electrical Engineering & IT</li>
+            </ul>
+            <div class="info-links">
+                <a href="https://www.linkedin.com/in/doruk-orak-b066213a7" target="_blank">LinkedIn</a>
+                <a href="https://github.com/ethernit14" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="tumor.js"></script>
+</body>
+</html>
