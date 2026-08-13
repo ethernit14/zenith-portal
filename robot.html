@@ -59,12 +59,12 @@
     <line x1="250" y1="180" x2="670" y2="180" stroke="#667eea" stroke-width="2"/>
     <line x1="670" y1="180" x2="670" y2="250" stroke="#667eea" stroke-width="2"/>
     <text x="480" y="198" font-size="12" fill="#667eea" font-weight="600">5V / GND</text>
-    <!-- 1N4001 diode right before the ESP32 5V pin -->
-    <line x1="250" y1="180" x2="250" y2="225" stroke="#667eea" stroke-width="2"/>
-    <polygon points="240,225 260,225 250,239" fill="#ffd166"/>
-    <line x1="240" y1="239" x2="260" y2="239" stroke="#ffd166" stroke-width="2.5"/>
-    <line x1="250" y1="239" x2="250" y2="250" stroke="#667eea" stroke-width="2"/>
-    <text x="265" y="236" font-size="11" fill="#ffd166" font-weight="600">1N4001</text>
+    <!-- 1N4001 diode right before the branch that feeds ESP32 5V + the 100uF cap tap -->
+    <line x1="250" y1="180" x2="250" y2="190" stroke="#667eea" stroke-width="2"/>
+    <polygon points="240,190 260,190 250,204" fill="#ffd166"/>
+    <line x1="240" y1="204" x2="260" y2="204" stroke="#ffd166" stroke-width="2.5"/>
+    <line x1="250" y1="204" x2="250" y2="250" stroke="#667eea" stroke-width="2"/>
+    <text x="265" y="201" font-size="11" fill="#ffd166" font-weight="600">1N4001</text>
     <!-- 100uF capacitor across ESP32 5V/GND -->
     <line x1="250" y1="218" x2="150" y2="218" stroke="#667eea" stroke-width="1.5" stroke-dasharray="3,3"/>
     <rect x="10" y="188" width="140" height="60" rx="10" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
