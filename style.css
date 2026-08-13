@@ -705,3 +705,26 @@ footer {
     border-radius: 4px;
     transition: width 0.4s ease;
 }
+.predict-toggle-row {
+    display: flex;
+    gap: 8px;
+}
+.predict-toggle-btn {
+    flex: 1;
+    padding: 10px 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s ease;
+}
+.predict-toggle-btn.active {
+    background: linear-gradient(135deg, #667eea, #f093fb);
+    border-color: transparent;
+    color: white;
+    font-weight: 700;
+}
+.predict-result.malignant .value { -webkit-text-fill-color: #f5576c; background: none; }
+.predict-result.benign .value { -webkit-text-fill-color: #4fd1c5; background: none; }
