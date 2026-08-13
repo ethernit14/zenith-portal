@@ -41,10 +41,10 @@
             <span class="tech-tag">3300µF 35V Capacitor</span>
         </div>
         <div class="photo-gallery">
-            <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203341.jpg">
-            <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203342.jpg">
-            <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203343.jpg">
-            <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203344.jpg">
+            <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203632.jpg">
+            <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203633.jpg">
+            <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203634.jpg">
+            <img src="https://raw.githubusercontent.com/ethernit14/zenith-portal/main/images/1000203635.jpg">
         </div>
         <h2 class="section-title robot-section-gap">⚡ Circuit</h2>
         <p class="build-story">Two Li-ion cells in series (7.4V) feed an XL4015 buck converter set to output 5V, which powers both the ESP32 and the PCA9685's servo rail. A 1N4001 diode sits in series on the branch feeding the ESP32's 5V pin for reverse-polarity protection, and a 100µF capacitor bridges the ESP32's 5V and GND pins to smooth its supply. The PCA9685 gets its logic power from the ESP32's 3.3V line and talks over I2C — GPIO22 to SDA, GPIO23 to SCL. All four servos run off PCA9685 channels 4 through 7, with a 3300µF capacitor in parallel on the power rail to smooth out the current draw when every servo moves at once.</p>
