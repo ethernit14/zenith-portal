@@ -756,3 +756,11 @@ footer {
     color: #667eea;
     min-height: 1.2em;
 }
+.sudoku-select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+    border-radius: 30px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+}
