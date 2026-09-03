@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="https://media.istockphoto.com/id/1324569050/tr/vektör/z-letter-liner-logo-design.jpg?s=612x612&w=0&k=20&c=T8AiugxFr90SvvL8mb-gBpHij5vJubiH-Y7T4OcjiHA=">
+<title>Zenitith | Diffusion Digit Generator</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="diffusion-style.css">
+</head>
+<body>
+<div id="stars-container"><div class="stars" id="stars1"></div></div>
+<div class="menu-container">
+<div class="hamburger" onclick="toggleMenu()">
+<span></span><span></span><span></span>
+</div>
+<nav class="side-menu" id="sideMenu">
+<div class="close-menu" onclick="toggleMenu()">&times;</div>
+<a href="index.html">Main Menu</a>
+<a href="projects.html">Projects</a>
+<a href="robot.html">Mini-Bug Robot</a>
+</nav>
+</div>
+
+<div class="content-layer">
+<h2 class="section-title">🌀 Diffusion Digit Generator</h2>
+<p class="app-tagline">
+    A denoising diffusion model (DDPM), built from scratch in PyTorch and trained on
+    MNIST, running entirely in your browser via ONNX. Press generate and watch a batch
+    of images resolve out of pure random noise &mdash; nothing here is pre-rendered.
+</p>
+
+<div class="app-panel diffusion-panel">
+    <button class="app-btn" id="genBtn">Generate</button>
+    <div class="app-status" id="diffStatus">Ready when you are.</div>
+
+    <canvas id="liveGrid" class="live-grid" style="display:none;"></canvas>
+
+    <div class="scrub-row" id="scrubWrap" style="display:none;">
+        <span class="scrub-tag">noise</span>
+        <input type="range" id="scrubSlider" min="0" max="1" value="1" class="scrub-slider">
+        <span class="scrub-tag">image</span>
+        <span class="scrub-current" id="scrubLabel">final</span>
+    </div>
+</div>
+
+<p class="diffusion-note">
+    Every batch is classified by a small CNN trained on real MNIST labels, and the
+    strongest example of each digit is kept below. Each card also shows how far that
+    sample sits from the nearest real, held-out digit &mdash; the same check used to
+    confirm the model generalises rather than memorises
+    (<a href="https://github.com/ethernit14" target="_blank">full write-up on GitHub</a>).
+</p>
+
+<div class="digit-grid" id="diffResults"></div>
+
+<a href="projects.html" class="app-btn secondary" style="margin-bottom:60px; text-decoration:none; display:inline-block;">Back to Projects</a>
+</div>
+
+<footer>
+<p>&copy; 2026 / Doruk Orak / St. Georg Austrian High School</p>
+<p>Contact: <a href="mailto:dorak2293@gmail.com" style="color:#667eea; text-decoration:none;">dorak2293@gmail.com</a> </p>
+</footer>
+
+<div class="info-btn" onclick="toggleInfo(event)">ℹ</div>
+<div class="info-popup" id="infoPopup">
+<div class="info-popup-inner">
+<h3>About Me</h3>
+<p>I'm <strong>Doruk Orak</strong>, a 12th grade student at Sankt Georg Austrian High School in Istanbul.</p>
+<p>My interests span <strong>hardware design</strong>, <strong>artificial intelligence</strong>, <strong>programming</strong>, and <strong>physics</strong>. Connecting the world of intelligent systems with physical circuits.</p>
+<ul>
+<li>🥇 Bebras Informatik — 1st Place, Perfect Score (2024)</li>
+<li>📜 Andrew Ng ML Specialization — DeepLearning.AI</li>
+<li>🎯 Targeting TUM Electrical Engineering & IT</li>
+</ul>
+<div class="info-links">
+<a href="https://www.linkedin.com/in/doruk-orak-b066213a7" target="_blank">LinkedIn</a>
+<a href="https://github.com/ethernit14" target="_blank">GitHub</a>
+</div>
+</div>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js"></script>
+<script src="diffusion.js"></script>
+</body>
+</html>
