@@ -7,21 +7,105 @@
     const skipBtn = document.getElementById('sudokuSkip');
     const clearBtn = document.getElementById('sudokuClear');
     const exampleBtn = document.getElementById('sudokuExample');
+    const exampleSelect = document.getElementById('sudokuExampleSelect');
     const speedSlider = document.getElementById('sudokuSpeed');
 
     if (!boardEl) return;
 
-    const EXAMPLE = [
-        '53..7....',
-        '6..195...',
-        '.98....6.',
-        '8...6...3',
-        '4..8.3..1',
-        '7...2...6',
-        '.6....28.',
-        '...419..5',
-        '....8..79'
+    const EXAMPLES = [
+        { label: 'Easy (38 clues)', puzzle: [
+            '48.9..2.1',
+            '...3627.8',
+            '..7...9.3',
+            '1....5632',
+            '.5...3.7.',
+            '.7.62.5.9',
+            '53.2..8.7',
+            '8467.....',
+            '7.95.....',
+        ]},
+        { label: 'Easy (36 clues)', puzzle: [
+            '.8..5..6.',
+            '.15..27..',
+            '..71.49..',
+            '1.8..5632',
+            '...8.....',
+            '.746.1.8.',
+            '.31.4..9.',
+            '.46..9.25',
+            '72....41.',
+        ]},
+        { label: 'Medium (32 clues)', puzzle: [
+            '48..5.2.1',
+            '91.....4.',
+            '.6....9..',
+            '..84..6..',
+            '.5..9.1..',
+            '..4.21...',
+            '.3...68..',
+            '....19325',
+            '..953.41.',
+        ]},
+        { label: 'Medium (30 clues)', puzzle: [
+            '.83..7261',
+            '..5.6..4.',
+            '.6..8.9..',
+            '.9.4..6.2',
+            '.52..3...',
+            '.7...158.',
+            '......89.',
+            '...7...25',
+            '...5..4..',
+        ]},
+        { label: 'Hard (28 clues)', puzzle: [
+            '.8.9..2..',
+            '..5.62..8',
+            '..7...9.3',
+            '1...75...',
+            '...8.....',
+            '3.46.....',
+            '.3..468..',
+            '....19.2.',
+            '..95..41.',
+        ]},
+        { label: 'Hard (26 clues)', puzzle: [
+            '4...57...',
+            '.1.3.....',
+            '2.....95.',
+            '.9....63.',
+            '...89....',
+            '..46...8.',
+            '5...4.897',
+            '..6......',
+            '.2...84.6',
+        ]},
+        { label: 'Expert (26 clues)', puzzle: [
+            '..3.5.261',
+            '9..3.2...',
+            '.6.......',
+            '1..4....2',
+            '6....3...',
+            '.7...1.89',
+            '.3....8..',
+            '.4...9.2.',
+            '7..5...1.',
+        ]},
+        { label: 'Diabolical (25 clues)', puzzle: [
+            '...9.7...',
+            '.1.3...48',
+            '......953',
+            '..8.7.6..',
+            '.....3...',
+            '..46..5..',
+            '....4...7',
+            '8...1....',
+            '72.5..41.',
+        ]},
     ];
+
+    exampleSelect.innerHTML = EXAMPLES
+        .map((ex, i) => `<option value="${i}">${ex.label}</option>`)
+        .join('');
 
     // Build the 81 cells
     const cells = [];
@@ -159,14 +243,15 @@
     function loadExample() {
         if (solving) return;
         clearMarks();
-        EXAMPLE.forEach((rowStr, r) => {
+        const chosen = EXAMPLES[parseInt(exampleSelect.value, 10)];
+        chosen.puzzle.forEach((rowStr, r) => {
             rowStr.split('').forEach((ch, c) => {
                 const cell = cells[r * 9 + c];
                 cell.value = ch === '.' ? '' : ch;
                 cell.classList.toggle('given', ch !== '.');
             });
         });
-        setStatus('Example puzzle loaded.');
+        setStatus(`${chosen.label} puzzle loaded.`);
     }
 
     function clearBoard() {
