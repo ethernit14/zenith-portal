@@ -728,3 +728,31 @@ footer {
 }
 .predict-result.malignant .value { -webkit-text-fill-color: #f5576c; background: none; }
 .predict-result.benign .value { -webkit-text-fill-color: #4fd1c5; background: none; }
+.sudoku-cell.trying {
+    background: rgba(102, 126, 234, 0.35);
+    color: #a6b4f5;
+    transition: background 0.1s ease;
+}
+.sudoku-cell.backtrack {
+    background: rgba(245, 87, 108, 0.4);
+    color: #ffb3bd;
+    transition: background 0.1s ease;
+}
+.sudoku-speed-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 380px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+.sudoku-speed-row input[type="range"] {
+    flex: 1;
+    accent-color: #f093fb;
+}
+.sudoku-step-count {
+    font-size: 0.8rem;
+    color: #667eea;
+    min-height: 1.2em;
+}
