@@ -83,7 +83,6 @@
     width: 100%;
     aspect-ratio: 1 / 1;
     max-width: 96px;
-    perspective: 800px;
     cursor: pointer;
 }
 
@@ -91,18 +90,17 @@
     position: relative;
     width: 100%;
     height: 100%;
-    transition: transform 0.5s;
-    transform-style: preserve-3d;
 }
 
-.digit-flip.flipped .digit-flip-inner {
-    transform: rotateY(180deg);
-}
-
+/* Plain 2D opacity crossfade instead of a 3D rotateY flip.
+   Safari has a well-known bug where backdrop-filter on an ancestor
+   (our .digit-slot cards use one for the glass panel look) breaks
+   backface-visibility on nested 3D-transformed children -- the
+   hidden face bleeds through intermittently. This sidesteps it
+   entirely by never using 3D transforms here. */
 .digit-face {
     position: absolute;
     inset: 0;
-    backface-visibility: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -111,11 +109,25 @@
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     overflow: hidden;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease;
 }
 
 .digit-face.back {
-    transform: rotateY(180deg);
     gap: 4px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.digit-flip.flipped .digit-face.front {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.digit-flip.flipped .digit-face.back {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .digit-canvas {
