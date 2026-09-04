@@ -113,12 +113,14 @@ async function calibrate() {
     const msPerBatchStep = performance.now() - t0;
 
     // Pick (batch size, ddim steps) so a full run stays under roughly 12-15s.
-    // Batch size floor is 60 (6x10 grid) even on slower devices -- step count
-    // is the knob that adapts to speed instead, since more samples per digit
-    // matters more here than a few extra denoising steps.
+    // Batch size floor is 60 (6x10 grid) even on slower devices. 16 steps was
+    // the original, known-good value (used throughout early testing at n=40)
+    // -- kept here rather than pushed higher, since DDIM has strongly
+    // diminishing returns past ~16 steps and the extra time isn't worth it
+    // on exactly the devices that can least afford it.
     if (msPerBatchStep < 60) return { n: 70, steps: 30 };
     if (msPerBatchStep < 180) return { n: 60, steps: 22 };
-    return { n: 60, steps: 14 };
+    return { n: 60, steps: 16 };
 }
 
 // ---------------------------------------------------------------------------
