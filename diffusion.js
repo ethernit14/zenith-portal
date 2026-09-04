@@ -265,22 +265,49 @@ let lastRun = null; // { samples, n, scores, history, cols }
 
 function $(id) { return document.getElementById(id); }
 
+function drawPlaceholderNoise(canvas, n = 60, cols = 10) {
+    const arr = new Float32Array(n * PIXELS);
+    for (let i = 0; i < arr.length; i++) arr[i] = randn();
+    renderGrid(canvas, arr, n, cols);
+}
+
+function paintYield(ms = 0) {
+    // Forces the browser to actually paint pending DOM changes before the
+    // next chunk of (blocking, single-threaded WASM) work runs. Without
+    // this, a status-text update made right before a heavy synchronous
+    // computation can sit in the DOM unpainted until the computation
+    // finishes -- looking like nothing happened for several seconds.
+    return new Promise(r => setTimeout(r, ms));
+}
+
 async function handleGenerate() {
     const btn = $('genBtn');
     btn.disabled = true;
-    $('diffStatus').textContent = 'Warming up...';
+    btn.textContent = 'Generating...';
     $('diffResults').innerHTML = '';
     $('scrubWrap').style.display = 'none';
 
+    const liveCanvas = $('liveGrid');
+    liveCanvas.style.display = 'block';
+    drawPlaceholderNoise(liveCanvas); // instant feedback -- and literally correct: this IS step 0
+    $('diffStatus').textContent = 'Warming up the model...';
+    await paintYield(20);
+
     try {
         if (!unetSession) {
-            await loadEverything(msg => { $('diffStatus').textContent = msg; });
+            await loadEverything(async msg => {
+                $('diffStatus').textContent = msg;
+                await paintYield();
+            });
         }
+        $('diffStatus').textContent = 'Calibrating for your device...';
+        await paintYield();
+
         const { n, steps } = await calibrate();
         const cols = Math.min(10, n);
 
-        const liveCanvas = $('liveGrid');
-        liveCanvas.style.display = 'block';
+        $('diffStatus').textContent = `Starting a ${n}-image batch...`;
+        await paintYield();
 
         const { samples, history } = await generateBatch(
             n, steps,
@@ -289,6 +316,7 @@ async function handleGenerate() {
         );
 
         $('diffStatus').textContent = 'Scoring with the digit classifier...';
+        await paintYield();
         const scores = await classify(samples, n);
 
         lastRun = { samples, n, scores, history, cols };
@@ -302,6 +330,7 @@ async function handleGenerate() {
         $('diffStatus').textContent = 'Something went wrong: ' + err.message;
     } finally {
         btn.disabled = false;
+        btn.textContent = 'Generate';
     }
 }
 
