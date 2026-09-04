@@ -112,10 +112,13 @@ async function calibrate() {
     });
     const msPerBatchStep = performance.now() - t0;
 
-    // Pick (batch size, ddim steps) so a full run stays under ~12s.
-    if (msPerBatchStep < 60) return { n: 64, steps: 30 };
+    // Pick (batch size, ddim steps) so a full run stays under roughly 12-15s.
+    // Batch size floor is 60 (6x10 grid) even on slower devices -- step count
+    // is the knob that adapts to speed instead, since more samples per digit
+    // matters more here than a few extra denoising steps.
+    if (msPerBatchStep < 60) return { n: 70, steps: 30 };
     if (msPerBatchStep < 180) return { n: 60, steps: 22 };
-    return { n: 40, steps: 16 };
+    return { n: 60, steps: 14 };
 }
 
 // ---------------------------------------------------------------------------
