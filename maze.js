@@ -355,7 +355,14 @@
     if (resetBtn) resetBtn.addEventListener('click', () => { stopAnimation(); clearAll(false); });
     if (algoSel) algoSel.addEventListener('change', () => {
         updateNote();
-        if (hasResult) runSearch(false);
+        // Keep the board exactly as drawn, but drop the previous algorithm's
+        // result and wait for Run — switching algorithms must not auto-solve.
+        stopAnimation();
+        clearMarks();
+        hasResult = false;
+        render();
+        setStatus('');
+        setStats('');
     });
     if (sizeSel) sizeSel.addEventListener('change', () => {
         stopAnimation();
