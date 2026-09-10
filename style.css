@@ -702,6 +702,43 @@ footer {
     border-radius: 3px;
     display: inline-block;
 }
+.maze-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.65);
+    cursor: pointer;
+    user-select: none;
+}
+.maze-check input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background: rgba(10, 14, 39, 0.85);
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s ease;
+}
+.maze-check input:checked {
+    background: linear-gradient(135deg, #667eea, #f093fb);
+    border-color: transparent;
+}
+.maze-check input:checked::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #fff;
+}
+.maze-check input:disabled { opacity: 0.5; cursor: not-allowed; }
 .maze-stats {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.65);

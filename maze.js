@@ -21,6 +21,7 @@
     const randomBtn = document.getElementById('mazeRandom');
     const clearBtn = document.getElementById('mazeClearWalls');
     const resetBtn = document.getElementById('mazeReset');
+    const mudChk = document.getElementById('mazeMud');
     const modeBtns = {
         wall: document.getElementById('mazeModeWall'),
         mud: document.getElementById('mazeModeMud'),
@@ -200,7 +201,7 @@
     }
 
     function setControlsDisabled(d) {
-        [runBtn, genBtn, randomBtn, clearBtn, resetBtn, algoSel, sizeSel]
+        [runBtn, genBtn, randomBtn, clearBtn, resetBtn, algoSel, sizeSel, mudChk]
             .concat(Object.values(modeBtns))
             .forEach(el => { if (el) el.disabled = d; });
     }
@@ -304,15 +305,20 @@
     function randomWalls() {
         stopAnimation();
         blocked.fill(0); cost.fill(1); clearMarks();
+        const withMud = mudChk ? mudChk.checked : true;
+        // Without mud, spend the mud budget on walls so the board stays as dense.
+        const wallP = withMud ? 0.24 : 0.30;
         for (let i = 0; i < blocked.length; i++) {
             if (i === start || i === end) continue;
             const r = Math.random();
-            if (r < 0.24) blocked[i] = 1;
-            else if (r < 0.36) cost[i] = MUD_COST;
+            if (r < wallP) blocked[i] = 1;
+            else if (withMud && r < wallP + 0.12) cost[i] = MUD_COST;
         }
         hasResult = false;
         render();
-        setStatus('Random walls and mud generated.');
+        setStatus(withMud
+            ? 'Random walls and mud generated.'
+            : 'Random walls generated — every cell costs the same.');
         setStats('');
     }
 
