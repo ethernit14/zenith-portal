@@ -22,32 +22,83 @@
         </nav>
     </div>
     <div class="content-layer">
-        <h2 class="section-title">🧩 Maze Solver</h2>
-        <p class="app-tagline">Visualizing pathfinding algorithms like BFS and A* through mazes — runs entirely in your browser.</p>
+        <h2 class="section-title">🧩 Pathfinding Visualizer</h2>
+        <p class="app-tagline">Eight search algorithms racing across the same grid — draw the obstacles yourself and watch where they disagree. Everything runs in your browser.</p>
         <div class="app-panel maze-panel">
-            <div class="maze-mode-row">
-                <button class="maze-mode-btn" id="mazeModeWall">✏️ Draw Walls</button>
-                <button class="maze-mode-btn" id="mazeModeStart">🟦 Set Start</button>
-                <button class="maze-mode-btn" id="mazeModeEnd">🟪 Set End</button>
+
+            <div class="maze-toolbar">
+                <label class="maze-field">
+                    <span>Algorithm</span>
+                    <select id="mazeAlgo" class="maze-select">
+                        <optgroup label="Uninformed">
+                            <option value="bfs">Breadth-First Search</option>
+                            <option value="dfs">Depth-First Search</option>
+                            <option value="dijkstra">Dijkstra</option>
+                        </optgroup>
+                        <optgroup label="Informed (heuristic)">
+                            <option value="astar" selected>A*</option>
+                            <option value="greedy">Greedy Best-First</option>
+                        </optgroup>
+                        <optgroup label="Bidirectional">
+                            <option value="bibfs">Bidirectional BFS</option>
+                            <option value="bidijkstra">Bidirectional Dijkstra</option>
+                            <option value="biastar">Bidirectional A*</option>
+                        </optgroup>
+                    </select>
+                </label>
+                <label class="maze-field">
+                    <span>Grid</span>
+                    <select id="mazeSize" class="maze-select">
+                        <option value="small">31 × 19</option>
+                        <option value="medium" selected>45 × 27</option>
+                        <option value="large">61 × 37</option>
+                    </select>
+                </label>
+                <label class="maze-field">
+                    <span>Speed</span>
+                    <select id="mazeSpeed" class="maze-select">
+                        <option value="slow">Slow</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="fast">Fast</option>
+                        <option value="instant">Instant</option>
+                    </select>
+                </label>
             </div>
-            <p class="maze-hint">Pick a mode above, then tap/click cells on the grid. Draw walls, move the start and end points, then run a search.</p>
+
+            <p class="maze-algo-note" id="mazeAlgoNote"></p>
+
+            <div class="maze-mode-row">
+                <button class="maze-mode-btn" id="mazeModeWall">✏️ Walls</button>
+                <button class="maze-mode-btn" id="mazeModeMud">🟫 Mud (×5)</button>
+                <button class="maze-mode-btn" id="mazeModeStart">🟦 Start</button>
+                <button class="maze-mode-btn" id="mazeModeEnd">🟪 End</button>
+            </div>
+            <p class="maze-hint">Pick a mode, then click and <strong>hold</strong> to paint across the grid — pressing on something you already drew erases instead. Once a search has run, the solution re-computes live as you keep drawing.</p>
+
             <div class="maze-grid" id="mazeGrid"></div>
+
             <div class="maze-legend">
                 <span><i style="background:#667eea"></i> Start</span>
                 <span><i style="background:#f093fb"></i> End</span>
                 <span><i style="background:rgba(255,255,255,0.35)"></i> Wall</span>
-                <span><i style="background:rgba(102,126,234,0.35)"></i> Visited</span>
+                <span><i style="background:rgba(180,120,60,0.55)"></i> Mud (costs 5)</span>
+                <span><i style="background:rgba(102,126,234,0.35)"></i> Explored</span>
+                <span><i style="background:rgba(45,212,191,0.35)"></i> Explored (reverse)</span>
                 <span><i style="background:#ffd166"></i> Path</span>
             </div>
+
             <div class="app-status" id="mazeStatus"></div>
+            <div class="maze-stats" id="mazeStats"></div>
+
             <div class="app-btn-row">
-                <button class="app-btn" id="mazeBfs">Run BFS</button>
-                <button class="app-btn" id="mazeAstar">Run A*</button>
+                <button class="app-btn" id="mazeRun">▶ Run Search</button>
+                <button class="app-btn secondary" id="mazeGenerate">Generate Maze</button>
                 <button class="app-btn secondary" id="mazeRandom">Random Walls</button>
-                <button class="app-btn secondary" id="mazeClearWalls">Clear Walls</button>
+                <button class="app-btn secondary" id="mazeClearWalls">Clear Board</button>
                 <button class="app-btn secondary" id="mazeReset">Reset</button>
             </div>
         </div>
+
         <a href="projects.html" class="app-btn secondary" style="margin-bottom:60px; text-decoration:none; display:inline-block;">Back to Projects</a>
     </div>
     <footer>
@@ -72,6 +123,7 @@
         </div>
     </div>
     <script src="script.js"></script>
+    <script src="maze-algos.js"></script>
     <script src="maze.js"></script>
 </body>
 </html>

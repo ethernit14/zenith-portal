@@ -1,294 +1,373 @@
+/* ============================================================
+   maze.js — grid UI, painting and animation.
+   Algorithms live in maze-algos.js (window.MazeAlgos).
+   ============================================================ */
 (function () {
-    const COLS = 25;
-    const ROWS = 15;
+    'use strict';
+
     const gridEl = document.getElementById('mazeGrid');
+    if (!gridEl || !window.MazeAlgos) return;
+
+    const { ALGORITHMS, pathCost, generateMaze } = window.MazeAlgos;
+
     const statusEl = document.getElementById('mazeStatus');
-    if (!gridEl) return;
-
-    const modeWallBtn = document.getElementById('mazeModeWall');
-    const modeStartBtn = document.getElementById('mazeModeStart');
-    const modeEndBtn = document.getElementById('mazeModeEnd');
-    const bfsBtn = document.getElementById('mazeBfs');
-    const astarBtn = document.getElementById('mazeAstar');
-    const clearWallsBtn = document.getElementById('mazeClearWalls');
+    const statsEl = document.getElementById('mazeStats');
+    const noteEl = document.getElementById('mazeAlgoNote');
+    const algoSel = document.getElementById('mazeAlgo');
+    const sizeSel = document.getElementById('mazeSize');
+    const speedSel = document.getElementById('mazeSpeed');
+    const runBtn = document.getElementById('mazeRun');
+    const genBtn = document.getElementById('mazeGenerate');
     const randomBtn = document.getElementById('mazeRandom');
+    const clearBtn = document.getElementById('mazeClearWalls');
     const resetBtn = document.getElementById('mazeReset');
-    const allButtons = [bfsBtn, astarBtn, clearWallsBtn, randomBtn, resetBtn, modeWallBtn, modeStartBtn, modeEndBtn];
+    const modeBtns = {
+        wall: document.getElementById('mazeModeWall'),
+        mud: document.getElementById('mazeModeMud'),
+        start: document.getElementById('mazeModeStart'),
+        end: document.getElementById('mazeModeEnd')
+    };
 
+    const SIZES = {
+        small: { cols: 31, rows: 19 },
+        medium: { cols: 45, rows: 27 },
+        large: { cols: 61, rows: 37 }
+    };
+    const SPEEDS = { slow: 2, normal: 8, fast: 30, instant: Infinity };
+    const MUD_COST = 5;
+
+    // ---- state ----
+    let COLS, ROWS, blocked, cost, start, end;
+    let cellEls = [], lastClass = [];
+    let marks;                 // 0 none, 1 forward frontier, 2 backward frontier, 3 path
     let mode = 'wall';
-    let start = { r: 2, c: 2 };
-    let end = { r: ROWS - 3, c: COLS - 3 };
-    let walls = new Set();
-    let running = false;
+    let running = false;       // an animation is playing
+    let hasResult = false;     // a finished search is on screen -> live re-run while editing
+    let animId = null, liveId = null;
+    let drag = null;           // { action: 'wall'|'mud'|'erase'|'start'|'end' }
 
-    const cellEls = [];
+    const idx = (r, c) => r * COLS + c;
 
-    function key(r, c) { return r + ',' + c; }
+    /* ---------------- grid construction ---------------- */
 
-    function buildGrid() {
-        gridEl.style.gridTemplateColumns = `repeat(${COLS}, 1fr)`;
-        gridEl.style.gridTemplateRows = `repeat(${ROWS}, 1fr)`;
-        for (let r = 0; r < ROWS; r++) {
-            const row = [];
-            for (let c = 0; c < COLS; c++) {
-                const cell = document.createElement('div');
-                cell.className = 'maze-cell';
-                cell.addEventListener('click', () => handleCellClick(r, c));
-                gridEl.appendChild(cell);
-                row.push(cell);
-            }
-            cellEls.push(row);
+    function buildGrid(cols, rows) {
+        COLS = cols; ROWS = rows;
+        const n = cols * rows;
+        blocked = new Uint8Array(n);
+        cost = new Uint16Array(n).fill(1);
+        marks = new Uint8Array(n);
+        start = idx(Math.floor(rows / 2), Math.max(1, Math.round(cols * 0.12)));
+        end = idx(Math.floor(rows / 2), Math.min(cols - 2, Math.round(cols * 0.88)));
+
+        gridEl.innerHTML = '';
+        gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        gridEl.style.aspectRatio = `${cols} / ${rows}`;
+        cellEls = new Array(n);
+        lastClass = new Array(n).fill('');
+
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < n; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'maze-cell';
+            cell.dataset.i = i;
+            frag.appendChild(cell);
+            cellEls[i] = cell;
         }
-    }
-
-    function handleCellClick(r, c) {
-        if (running) return;
-        if (mode === 'start') {
-            if (key(r, c) === key(end.r, end.c) || walls.has(key(r, c))) return;
-            start = { r, c };
-        } else if (mode === 'end') {
-            if (key(r, c) === key(start.r, start.c) || walls.has(key(r, c))) return;
-            end = { r, c };
-        } else {
-            if (key(r, c) === key(start.r, start.c) || key(r, c) === key(end.r, end.c)) return;
-            const k = key(r, c);
-            if (walls.has(k)) walls.delete(k); else walls.add(k);
-        }
+        gridEl.appendChild(frag);
+        hasResult = false;
         render();
+        setStats('');
     }
+
+    /* ---------------- rendering ---------------- */
+
+    function classFor(i) {
+        let cls = 'maze-cell';
+        if (blocked[i]) cls += ' wall';
+        else if (cost[i] > 1) cls += ' mud';
+        const m = marks[i];
+        if (m === 1) cls += ' visited';
+        else if (m === 2) cls += ' visited-b';
+        else if (m === 3) cls += ' path';
+        if (i === start) cls += ' start';
+        else if (i === end) cls += ' end';
+        return cls;
+    }
+
+    // Only touches the DOM for cells whose appearance actually changed.
+    function render() {
+        for (let i = 0; i < cellEls.length; i++) {
+            const cls = classFor(i);
+            if (cls !== lastClass[i]) { cellEls[i].className = cls; lastClass[i] = cls; }
+        }
+    }
+
+    function paintCell(i) {
+        const cls = classFor(i);
+        if (cls !== lastClass[i]) { cellEls[i].className = cls; lastClass[i] = cls; }
+    }
+
+    function clearMarks() {
+        marks.fill(0);
+    }
+
+    function setStatus(text) { if (statusEl) statusEl.textContent = text; }
+    function setStats(text) { if (statsEl) statsEl.textContent = text; }
+
+    /* ---------------- editing ---------------- */
+
+    function applyPaint(i) {
+        if (drag.action === 'start') {
+            if (i === end || blocked[i]) return false;
+            if (i === start) return false;
+            start = i;
+        } else if (drag.action === 'end') {
+            if (i === start || blocked[i]) return false;
+            if (i === end) return false;
+            end = i;
+        } else {
+            if (i === start || i === end) return false;
+            if (drag.action === 'wall') {
+                if (blocked[i]) return false;
+                blocked[i] = 1; cost[i] = 1;
+            } else if (drag.action === 'mud') {
+                if (!blocked[i] && cost[i] === MUD_COST) return false;
+                blocked[i] = 0; cost[i] = MUD_COST;
+            } else { // erase
+                if (!blocked[i] && cost[i] === 1) return false;
+                blocked[i] = 0; cost[i] = 1;
+            }
+        }
+        return true;
+    }
+
+    function startDrag(i) {
+        if (mode === 'start' || mode === 'end') {
+            drag = { action: mode };
+        } else if (mode === 'wall') {
+            // Pressing on an existing wall turns the whole drag into an eraser.
+            drag = { action: blocked[i] ? 'erase' : 'wall' };
+        } else {
+            drag = { action: (!blocked[i] && cost[i] === MUD_COST) ? 'erase' : 'mud' };
+        }
+        touchCell(i);
+    }
+
+    function touchCell(i) {
+        if (!drag || running) return;
+        if (!applyPaint(i)) return;
+        if (hasResult) scheduleLiveRun();   // keeps the solution in sync while you draw
+        else { render(); }
+    }
+
+    function cellFromEvent(e) {
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        if (!el || !el.dataset || el.dataset.i === undefined) return -1;
+        return +el.dataset.i;
+    }
+
+    gridEl.addEventListener('pointerdown', e => {
+        if (running) return;
+        const i = cellFromEvent(e);
+        if (i < 0) return;
+        e.preventDefault();
+        try { gridEl.setPointerCapture(e.pointerId); } catch (_) { }
+        startDrag(i);
+    });
+
+    gridEl.addEventListener('pointermove', e => {
+        if (!drag || running) return;
+        e.preventDefault();
+        const i = cellFromEvent(e);
+        if (i >= 0) touchCell(i);
+    });
+
+    function endDrag(e) {
+        if (!drag) return;
+        drag = null;
+        if (e && e.pointerId !== undefined) {
+            try { gridEl.releasePointerCapture(e.pointerId); } catch (_) { }
+        }
+    }
+    gridEl.addEventListener('pointerup', endDrag);
+    gridEl.addEventListener('pointercancel', endDrag);
+    window.addEventListener('pointerup', endDrag);
+
+    /* ---------------- running a search ---------------- */
+
+    function currentGrid() {
+        return { cols: COLS, rows: ROWS, blocked, cost, start, end };
+    }
+
+    function setControlsDisabled(d) {
+        [runBtn, genBtn, randomBtn, clearBtn, resetBtn, algoSel, sizeSel]
+            .concat(Object.values(modeBtns))
+            .forEach(el => { if (el) el.disabled = d; });
+    }
+
+    function describe(id, result, ms) {
+        const algo = ALGORITHMS[id];
+        if (!result.path) return `${algo.label}: no path — the target is walled off.`;
+        const c = pathCost(result.path, cost);
+        const steps = result.path.length - 1;
+        return `${algo.label} · ${result.visited.length} cells explored · ` +
+            `${steps} steps · cost ${c} · ${ms.toFixed(1)} ms`;
+    }
+
+    function stopAnimation() {
+        if (animId !== null) { cancelAnimationFrame(animId); animId = null; }
+        running = false;
+        setControlsDisabled(false);
+    }
+
+    function runSearch(animate) {
+        stopAnimation();
+        const id = algoSel.value;
+        const algo = ALGORITHMS[id];
+        clearMarks();
+
+        const t0 = performance.now();
+        const result = algo.run(currentGrid());
+        const ms = performance.now() - t0;
+
+        const perFrame = SPEEDS[speedSel.value];
+        hasResult = true;
+
+        if (!animate || perFrame === Infinity) {
+            for (const [i, side] of result.visited) marks[i] = side === 0 ? 1 : 2;
+            if (result.path) for (const i of result.path) marks[i] = 3;
+            render();
+            setStatus(result.path ? 'Done.' : 'No path.');
+            setStats(describe(id, result, ms));
+            return;
+        }
+
+        running = true;
+        setControlsDisabled(true);
+        setStatus(`Running ${algo.label}...`);
+        setStats('');
+
+        const visited = result.visited;
+        let v = 0, p = 0;
+        const pathPerFrame = Math.max(1, Math.round(perFrame / 3));
+
+        function frame() {
+            if (v < visited.length) {
+                for (let k = 0; k < perFrame && v < visited.length; k++, v++) {
+                    const [i, side] = visited[v];
+                    marks[i] = side === 0 ? 1 : 2;
+                    paintCell(i);
+                }
+            } else if (result.path && p < result.path.length) {
+                for (let k = 0; k < pathPerFrame && p < result.path.length; k++, p++) {
+                    marks[result.path[p]] = 3;
+                    paintCell(result.path[p]);
+                }
+            } else {
+                running = false;
+                animId = null;
+                setControlsDisabled(false);
+                setStatus(result.path ? 'Done.' : 'No path found.');
+                setStats(describe(id, result, ms));
+                return;
+            }
+            animId = requestAnimationFrame(frame);
+        }
+        animId = requestAnimationFrame(frame);
+    }
+
+    // While you drag over a solved grid, re-solve instantly on the next frame.
+    function scheduleLiveRun() {
+        if (liveId !== null) return;
+        liveId = requestAnimationFrame(() => {
+            liveId = null;
+            runSearch(false);
+        });
+    }
+
+    /* ---------------- grid presets ---------------- */
+
+    function clearAll(keepEndpoints) {
+        blocked.fill(0);
+        cost.fill(1);
+        clearMarks();
+        if (!keepEndpoints) {
+            start = idx(Math.floor(ROWS / 2), Math.max(1, Math.round(COLS * 0.12)));
+            end = idx(Math.floor(ROWS / 2), Math.min(COLS - 2, Math.round(COLS * 0.88)));
+        }
+        hasResult = false;
+        render();
+        setStatus('');
+        setStats('');
+    }
+
+    function randomWalls() {
+        stopAnimation();
+        blocked.fill(0); cost.fill(1); clearMarks();
+        for (let i = 0; i < blocked.length; i++) {
+            if (i === start || i === end) continue;
+            const r = Math.random();
+            if (r < 0.24) blocked[i] = 1;
+            else if (r < 0.36) cost[i] = MUD_COST;
+        }
+        hasResult = false;
+        render();
+        setStatus('Random walls and mud generated.');
+        setStats('');
+    }
+
+    function generatePerfectMaze() {
+        stopAnimation();
+        const gen = generateMaze(COLS, ROWS);
+        blocked.set(gen);
+        cost.fill(1);
+        clearMarks();
+        start = idx(1, 1);
+        end = idx(ROWS - 2, COLS - 2);
+        blocked[start] = 0; blocked[end] = 0;
+        hasResult = false;
+        render();
+        setStatus('Perfect maze generated — exactly one route from start to end.');
+        setStats('');
+    }
+
+    /* ---------------- wiring ---------------- */
 
     function setMode(m) {
         mode = m;
-        [modeWallBtn, modeStartBtn, modeEndBtn].forEach(btn => btn.classList.remove('active'));
-        if (m === 'wall') modeWallBtn.classList.add('active');
-        if (m === 'start') modeStartBtn.classList.add('active');
-        if (m === 'end') modeEndBtn.classList.add('active');
+        Object.entries(modeBtns).forEach(([k, btn]) => {
+            if (btn) btn.classList.toggle('active', k === m);
+        });
     }
 
-    function render() {
-        for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) {
-                const cell = cellEls[r][c];
-                cell.className = 'maze-cell';
-                const k = key(r, c);
-                if (r === start.r && c === start.c) cell.classList.add('start');
-                else if (r === end.r && c === end.c) cell.classList.add('end');
-                else if (walls.has(k)) cell.classList.add('wall');
-            }
-        }
+    function updateNote() {
+        const algo = ALGORITHMS[algoSel.value];
+        if (noteEl && algo) noteEl.textContent = algo.note;
     }
 
-    function clearSearchMarks() {
-        for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) {
-                cellEls[r][c].classList.remove('visited', 'path');
-            }
-        }
-    }
+    Object.entries(modeBtns).forEach(([k, btn]) => {
+        if (btn) btn.addEventListener('click', () => setMode(k));
+    });
+    if (runBtn) runBtn.addEventListener('click', () => runSearch(true));
+    if (genBtn) genBtn.addEventListener('click', generatePerfectMaze);
+    if (randomBtn) randomBtn.addEventListener('click', randomWalls);
+    if (clearBtn) clearBtn.addEventListener('click', () => { stopAnimation(); clearAll(true); });
+    if (resetBtn) resetBtn.addEventListener('click', () => { stopAnimation(); clearAll(false); });
+    if (algoSel) algoSel.addEventListener('change', () => {
+        updateNote();
+        if (hasResult) runSearch(false);
+    });
+    if (sizeSel) sizeSel.addEventListener('change', () => {
+        stopAnimation();
+        const s = SIZES[sizeSel.value];
+        buildGrid(s.cols, s.rows);
+        setStatus('');
+    });
 
-    function neighbors(r, c) {
-        const deltas = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-        const result = [];
-        for (const [dr, dc] of deltas) {
-            const nr = r + dr, nc = c + dc;
-            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !walls.has(key(nr, nc))) {
-                result.push({ r: nr, c: nc });
-            }
-        }
-        return result;
-    }
-
-    function reconstructPath(cameFrom, endKey) {
-        const path = [];
-        let cur = endKey;
-        while (cameFrom.has(cur)) {
-            path.push(cur);
-            cur = cameFrom.get(cur);
-        }
-        path.push(cur);
-        path.reverse();
-        return path;
-    }
-
-    function bfs() {
-        const startKey = key(start.r, start.c);
-        const endKey = key(end.r, end.c);
-        const visitedOrder = [];
-        const cameFrom = new Map();
-        const seen = new Set([startKey]);
-        const queue = [{ r: start.r, c: start.c }];
-        let found = false;
-
-        while (queue.length) {
-            const cur = queue.shift();
-            const curKey = key(cur.r, cur.c);
-            visitedOrder.push(curKey);
-            if (curKey === endKey) { found = true; break; }
-            for (const n of neighbors(cur.r, cur.c)) {
-                const nk = key(n.r, n.c);
-                if (!seen.has(nk)) {
-                    seen.add(nk);
-                    cameFrom.set(nk, curKey);
-                    queue.push(n);
-                }
-            }
-        }
-        return { visitedOrder, path: found ? reconstructPath(cameFrom, endKey) : null };
-    }
-
-    function astar() {
-        const startKey = key(start.r, start.c);
-        const endKey = key(end.r, end.c);
-        const heuristic = (r, c) => Math.abs(r - end.r) + Math.abs(c - end.c);
-        const gScore = new Map([[startKey, 0]]);
-        const fScore = new Map([[startKey, heuristic(start.r, start.c)]]);
-        const cameFrom = new Map();
-        const open = new Map([[startKey, { r: start.r, c: start.c }]]);
-        const visitedOrder = [];
-        let found = false;
-
-        while (open.size) {
-            let curKey = null, curBestF = Infinity;
-            for (const [k, v] of open) {
-                const f = fScore.has(k) ? fScore.get(k) : Infinity;
-                if (f < curBestF) { curBestF = f; curKey = k; }
-            }
-            const cur = open.get(curKey);
-            open.delete(curKey);
-            visitedOrder.push(curKey);
-
-            if (curKey === endKey) { found = true; break; }
-
-            for (const n of neighbors(cur.r, cur.c)) {
-                const nk = key(n.r, n.c);
-                const tentativeG = gScore.get(curKey) + 1;
-                if (tentativeG < (gScore.has(nk) ? gScore.get(nk) : Infinity)) {
-                    cameFrom.set(nk, curKey);
-                    gScore.set(nk, tentativeG);
-                    fScore.set(nk, tentativeG + heuristic(n.r, n.c));
-                    if (!open.has(nk)) open.set(nk, n);
-                }
-            }
-        }
-        return { visitedOrder, path: found ? reconstructPath(cameFrom, endKey) : null };
-    }
-
-    function keyToCell(k) {
-        const [r, c] = k.split(',').map(Number);
-        return { r, c };
-    }
-
-    function setButtonsDisabled(disabled) {
-        allButtons.forEach(btn => { if (btn) btn.disabled = disabled; });
-    }
-
-    function animateResult(result, label) {
-        running = true;
-        setButtonsDisabled(true);
-        clearSearchMarks();
-        const { visitedOrder, path } = result;
-        let i = 0;
-        const startKey = key(start.r, start.c);
-        const endKey = key(end.r, end.c);
-
-        statusEl.textContent = `Running ${label}...`;
-
-        function stepVisited() {
-            if (i >= visitedOrder.length) {
-                if (path) {
-                    animatePath(path, label);
-                } else {
-                    statusEl.textContent = `${label}: no path found.`;
-                    running = false;
-                    setButtonsDisabled(false);
-                }
-                return;
-            }
-            const k = visitedOrder[i];
-            if (k !== startKey && k !== endKey) {
-                const { r, c } = keyToCell(k);
-                cellEls[r][c].classList.add('visited');
-            }
-            i++;
-            setTimeout(stepVisited, 6);
-        }
-        stepVisited();
-    }
-
-    function animatePath(path, label) {
-        let i = 0;
-        const startKey = key(start.r, start.c);
-        const endKey = key(end.r, end.c);
-        function stepPath() {
-            if (i >= path.length) {
-                statusEl.textContent = `${label}: path found — ${path.length - 1} steps.`;
-                running = false;
-                setButtonsDisabled(false);
-                return;
-            }
-            const k = path[i];
-            if (k !== startKey && k !== endKey) {
-                const { r, c } = keyToCell(k);
-                cellEls[r][c].classList.add('path');
-            }
-            i++;
-            setTimeout(stepPath, 20);
-        }
-        stepPath();
-    }
-
-    function runBfs() {
-        if (running) return;
-        animateResult(bfs(), 'BFS');
-    }
-
-    function runAstar() {
-        if (running) return;
-        animateResult(astar(), 'A*');
-    }
-
-    function clearWalls() {
-        if (running) return;
-        walls.clear();
-        clearSearchMarks();
-        render();
-        statusEl.textContent = '';
-    }
-
-    function randomMaze() {
-        if (running) return;
-        walls.clear();
-        for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) {
-                if ((r === start.r && c === start.c) || (r === end.r && c === end.c)) continue;
-                if (Math.random() < 0.28) walls.add(key(r, c));
-            }
-        }
-        clearSearchMarks();
-        render();
-        statusEl.textContent = 'Random walls generated.';
-    }
-
-    function fullReset() {
-        if (running) return;
-        walls.clear();
-        start = { r: 2, c: 2 };
-        end = { r: ROWS - 3, c: COLS - 3 };
-        clearSearchMarks();
-        render();
-        statusEl.textContent = '';
-    }
-
-    modeWallBtn.addEventListener('click', () => setMode('wall'));
-    modeStartBtn.addEventListener('click', () => setMode('start'));
-    modeEndBtn.addEventListener('click', () => setMode('end'));
-    bfsBtn.addEventListener('click', runBfs);
-    astarBtn.addEventListener('click', runAstar);
-    clearWallsBtn.addEventListener('click', clearWalls);
-    randomBtn.addEventListener('click', randomMaze);
-    resetBtn.addEventListener('click', fullReset);
-
-    buildGrid();
+    // ---- init ----
+    const defaultSize = window.innerWidth < 760 ? 'small' : 'medium';
+    if (sizeSel) sizeSel.value = defaultSize;
+    buildGrid(SIZES[defaultSize].cols, SIZES[defaultSize].rows);
     setMode('wall');
-    render();
+    updateNote();
 })();
