@@ -40,6 +40,34 @@ if (!coast.length && !waterPolys.length && !rels) {
     process.exit(0);
 }
 
+// --- relations: the path the Thames, Danube and Tiber use ---
+const relations = osm.elements.filter(e => e.type === 'relation');
+const wayById = new Map(ways.map(w => [w.id, w]));
+if (relations.length) {
+    console.log('\n--- multipolygon relations ---');
+    let okRings = 0, dropped = 0;
+    for (const rel of relations) {
+        const t = rel.tags || {};
+        const kind = t.natural || t.waterway || t.leisure || t.landuse || '?';
+        const wanted = rel.members.filter(m => m.type === 'way');
+        const have = wanted.filter(m => wayById.has(m.ref));
+        const members = have.map(m => ({
+            role: m.role, nodes: wayById.get(m.ref).nodes, geom: geom(wayById.get(m.ref))
+        })).filter(m => m.geom.length >= 2);
+        const rings = MapGeo.assembleRings(members);
+        const chainsOuter = MapGeo.joinWays(members.filter(m => m.role !== 'inner'), true);
+        const unclosed = chainsOuter.filter(c => !c.closed).length;
+        okRings += rings.outer.length;
+        if (!rings.outer.length) dropped++;
+        console.log(`  ${String(rel.id).padEnd(10)} ${kind.padEnd(12)} ` +
+            `members ${have.length}/${wanted.length}` +
+            (have.length < wanted.length ? ' (SOME MISSING)' : '') +
+            ` -> ${rings.outer.length} outer ring(s), ${rings.inner.length} hole(s)` +
+            (unclosed ? `  [${unclosed} chain(s) DID NOT CLOSE -> discarded]` : ''));
+    }
+    console.log(`  => ${okRings} usable ring(s); ${dropped} relation(s) produced nothing`);
+}
+
 if (coast.length) {
     const chains = MapGeo.joinWays(coast.map(w => ({ nodes: w.nodes, geom: geom(w) })));
     console.log(`\njoined into ${chains.length} chain(s)`);

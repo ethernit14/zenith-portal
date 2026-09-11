@@ -159,6 +159,13 @@ def clip_ways(elements, bbox):
         if closed or el["id"] in protected:
             if any(inside(n) for n in nodes):
                 out.append({**el, "nodes": nodes})
+            elif el["id"] in protected and not closed:
+                # A relation member far from the box still has to be KEPT, or its
+                # ring cannot close and the whole polygon is lost - this is how
+                # the Thames disappeared. We only need its connectivity, not its
+                # shape, so keep the two endpoints and drop everything between.
+                # The detail is outside the canvas and never drawn anyway.
+                out.append({**el, "nodes": [nodes[0], nodes[-1]]})
             continue
         runs, cur = [], []
         for k in range(len(nodes) - 1):
