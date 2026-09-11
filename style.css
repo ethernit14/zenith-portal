@@ -753,6 +753,43 @@ footer {
     .app-panel.maze-panel { padding: 20px 14px; }
 }
 
+/* ---- City Route Finder ---- */
+.app-panel.map-panel { max-width: 1000px; }
+.map-canvas {
+    width: 100%;
+    display: block;
+    background: rgba(10, 14, 39, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    cursor: crosshair;
+    touch-action: manipulation;
+}
+.app-panel.map-notes {
+    max-width: 1000px;
+    align-items: flex-start;
+    gap: 14px;
+    text-align: left;
+}
+.map-notes h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #f093fb;
+    letter-spacing: 0.5px;
+}
+.map-notes p {
+    margin: 0;
+    color: #a0aec0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+.map-notes code {
+    background: rgba(255, 255, 255, 0.07);
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: 0.85em;
+}
+.map-notes .info-links { margin-top: 4px; }
+
 /* ---- ML Predictor widgets (Diabetes, Tumor, etc.) ---- */
 .predict-form {
     width: 100%;

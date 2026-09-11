@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://media.istockphoto.com/id/1324569050/tr/vektör/z-letter-liner-logo-design.jpg?s=612x612&w=0&k=20&c=T8AiugxFr90SvvL8mb-gBpHij5vJubiH-Y7T4OcjiHA=">
+    <title>Zenitith | City Route Finder</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="stars-container"><div class="stars" id="stars1"></div></div>
+    <div class="menu-container">
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+        <nav class="side-menu" id="sideMenu">
+            <div class="close-menu" onclick="toggleMenu()">&times;</div>
+            <a href="index.html">Main Menu</a>
+            <a href="projects.html">Projects</a>
+            <a href="maze.html">Maze Solver</a>
+            <a href="robot.html">Mini-Bug Robot</a>
+            <a href="diffusion.html">Diffusion Model</a>
+        </nav>
+    </div>
+    <div class="content-layer">
+        <h2 class="section-title">🗺️ City Route Finder</h2>
+        <p class="app-tagline">The same eight search algorithms, now let loose on real street networks pulled live from OpenStreetMap. Watch A* cut through Barcelona's grid, then watch it get lost in Venice.</p>
+
+        <div class="app-panel map-panel">
+            <div class="maze-toolbar">
+                <label class="maze-field">
+                    <span>City</span>
+                    <select id="mapCity" class="maze-select"></select>
+                </label>
+                <label class="maze-field">
+                    <span>Algorithm</span>
+                    <select id="mapAlgo" class="maze-select">
+                        <optgroup label="Uninformed">
+                            <option value="bfs">Breadth-First Search</option>
+                            <option value="dfs">Depth-First Search</option>
+                            <option value="dijkstra">Dijkstra</option>
+                        </optgroup>
+                        <optgroup label="Informed (heuristic)">
+                            <option value="astar" selected>A*</option>
+                            <option value="greedy">Greedy Best-First</option>
+                        </optgroup>
+                        <optgroup label="Bidirectional">
+                            <option value="bibfs">Bidirectional BFS</option>
+                            <option value="bidijkstra">Bidirectional Dijkstra</option>
+                            <option value="biastar">Bidirectional A*</option>
+                        </optgroup>
+                    </select>
+                </label>
+                <label class="maze-field">
+                    <span>Minimise</span>
+                    <select id="mapWeight" class="maze-select">
+                        <option value="distance" selected>Distance</option>
+                        <option value="time">Travel time</option>
+                    </select>
+                </label>
+                <label class="maze-field">
+                    <span>Speed</span>
+                    <select id="mapSpeed" class="maze-select">
+                        <option value="slow">Slow</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="fast">Fast</option>
+                        <option value="instant">Instant</option>
+                    </select>
+                </label>
+            </div>
+
+            <p class="maze-algo-note" id="mapAlgoNote"></p>
+
+            <div class="maze-mode-row">
+                <button class="maze-mode-btn" id="mapModeStart">🟦 Place Start</button>
+                <button class="maze-mode-btn" id="mapModeEnd">🟪 Place End</button>
+            </div>
+            <p class="maze-hint">Pick a mode, then click anywhere on the map — the nearest junction becomes your pin.</p>
+
+            <canvas id="mapCanvas" class="map-canvas"></canvas>
+
+            <div class="maze-legend">
+                <span><i style="background:rgba(18,40,92,0.9); border:1px solid rgba(130,170,255,0.4)"></i> Water</span>
+                <span><i style="background:rgba(46,106,74,0.6)"></i> Parks</span>
+                <span><i style="background:rgba(255,176,116,0.75)"></i> Major road</span>
+                <span><i style="background:#667eea"></i> Start</span>
+                <span><i style="background:#f093fb"></i> End</span>
+                <span><i style="background:rgba(102,126,234,0.85)"></i> Explored</span>
+                <span><i style="background:rgba(45,212,191,0.85)"></i> Explored (reverse)</span>
+                <span><i style="background:#ffd166"></i> Route</span>
+            </div>
+
+            <div class="app-status" id="mapStatus"></div>
+            <div class="maze-stats" id="mapStats"></div>
+
+            <div class="app-btn-row">
+                <button class="app-btn" id="mapRun">▶ Find Route</button>
+                <button class="app-btn secondary" id="mapRandom">Random Endpoints</button>
+                <button class="app-btn secondary" id="mapClear">Clear Search</button>
+            </div>
+        </div>
+
+        <div class="app-panel map-notes">
+            <h3>How it works</h3>
+            <p>Road data comes from the <strong>OpenStreetMap Overpass API</strong>. Every way tagged as a road inside a roughly 2&nbsp;km box is downloaded, its points become graph nodes, and consecutive points become weighted edges. Only the largest connected component is kept, so no pin can land on an unreachable fragment.</p>
+            <p><strong>Drawing the sea is harder than it sounds.</strong> OpenStreetMap does not store the Marmara or the Danube as polygons — open water is defined by <code>natural=coastline</code> lines, with the convention that land lies on the <em>left</em> of each way's direction. To fill it, the coastline is clipped to the bounding box and then closed by walking clockwise around the box edge, which keeps the enclosed area on the water side. Rivers and lakes that <em>are</em> polygons arrive as multipolygon relations instead, with their islands punched out using the even-odd fill rule.</p>
+            <p>Edge weight is either <strong>length in metres</strong> or <strong>length ÷ speed limit</strong>, using the road's <code>maxspeed</code> tag where it exists and a per-road-class default where it doesn't. Switching between the two changes which route wins — the fast road around is often shorter in time and longer in distance.</p>
+            <p>The heuristic for A* and Greedy is <strong>great-circle distance</strong>, not the Manhattan distance used on the maze page — and in travel-time mode it is divided by the fastest speed in the network, because a heuristic that overestimates silently destroys A*'s optimality guarantee.</p>
+            <p><strong>Known limits:</strong> one-way restrictions and turn bans are ignored, so every street is treated as two-way. Buildings are not drawn — they would multiply the download size for something no algorithm reads. There is no pan or zoom yet. Rendering is plain 2D canvas: no map tiles, no Leaflet, no Mapbox, every line drawn from raw coordinates.</p>
+            <div class="info-links">
+                <a href="maze.html">Grid version of the same algorithms</a>
+                <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>
+            </div>
+        </div>
+
+        <a href="projects.html" class="app-btn secondary" style="margin-bottom:60px; text-decoration:none; display:inline-block;">Back to Projects</a>
+    </div>
+    <footer>
+        <p>&copy; 2026 / Doruk Orak / St. Georg Austrian High School</p>
+        <p>Contact: <a href="mailto:dorak2293@gmail.com" style="color:#667eea; text-decoration:none;">dorak2293@gmail.com</a> </p>
+    </footer>
+    <div class="info-btn" onclick="toggleInfo(event)">ℹ</div>
+    <div class="info-popup" id="infoPopup">
+        <div class="info-popup-inner">
+            <h3>About Me</h3>
+            <p>I'm <strong>Doruk Orak</strong>, a 12th grade student at Sankt Georg Austrian High School in Istanbul.</p>
+            <p>My interests span <strong>hardware design</strong>, <strong>artificial intelligence</strong>, <strong>programming</strong>, and <strong>physics</strong>. Connecting the world of intelligent systems with physical circuits.</p>
+            <ul>
+                <li>🥇 Bebras Informatik — 1st Place, Perfect Score (2024)</li>
+                <li>📜 Andrew Ng ML Specialization — DeepLearning.AI</li>
+                <li>🎯 Targeting TUM Electrical Engineering & IT</li>
+            </ul>
+            <div class="info-links">
+                <a href="https://www.linkedin.com/in/doruk-orak-b066213a7" target="_blank">LinkedIn</a>
+                <a href="https://github.com/ethernit14" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="graph-algos.js"></script>
+    <script src="map-geo.js"></script>
+    <script src="maps.js"></script>
+</body>
+</html>
