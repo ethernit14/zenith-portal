@@ -228,7 +228,7 @@ JMP 2            <span class="asm-c"># back to loop start</span></code></pre></d
 
         <h2 class="section-title robot-section-gap">🔬 Verification</h2>
         <p class="build-story">Each module was simulated in <strong>Icarus Verilog</strong> and inspected waveform by waveform in <strong>GTKWave</strong> before being wired into the top level. The load and store instructions were the last to work — the store encoding uses <code>rd</code> as the address base rather than the destination, which is easy to get backwards and produces silently wrong memory writes rather than an obvious failure.</p>
-        <p class="build-story">After simulation passed, the design was synthesised for a <strong>Tang Nano 9K</strong> FPGA. The board's six LEDs are driven by the low six bits of the program counter, so the loop is visible as a counting pattern — real hardware executing the instruction set, not a testbench asserting that it should.</p>
+        <p class="build-story">After simulation passed, the design was synthesized for a <strong>Tang Nano 9K</strong> FPGA. The board's six LEDs are driven by the low six bits of the program counter, so the loop is visible as a counting pattern — real hardware executing the instruction set, not a testbench asserting that it should.</p>
 
         <div class="parts-tags">
             <span class="tech-tag">Icarus Verilog</span>
