@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://media.istockphoto.com/id/1324569050/tr/vektör/z-letter-liner-logo-design.jpg?s=612x612&w=0&k=20&c=T8AiugxFr90SvvL8mb-gBpHij5vJubiH-Y7T4OcjiHA=">
+    <title>Zenitith | Zenith TX26 CPU</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="stars-container"><div class="stars" id="stars1"></div></div>
+    <div class="menu-container">
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+        <nav class="side-menu" id="sideMenu">
+            <div class="close-menu" onclick="toggleMenu()">&times;</div>
+            <a href="index.html">Main Menu</a>
+            <a href="projects.html">Projects</a>
+            <a href="robot.html">Mini-Bug Robot</a>
+            <a href="diffusion.html">Diffusion Model</a>
+        </nav>
+    </div>
+    <div class="content-layer">
+        <h2 class="section-title">🧮 Zenith TX26 — 16-bit CPU</h2>
+        <p class="robot-tagline">A 16-bit processor written from scratch in Verilog — no cores, no generators, no IP blocks. Nine modules, sixteen instructions, verified on a Tang Nano 9K FPGA and submitted to TinyTapeout for fabrication.</p>
+
+        <div class="tapeout-banner">
+            <span class="tapeout-dot"></span>
+            <div>
+                <strong>Taped out via TinyTapeout</strong>
+                <span>Physical silicon expected back Q4 2026. The design below is what's on the die.</span>
+            </div>
+        </div>
+
+        <div class="parts-tags">
+            <span class="tech-tag">16-bit datapath</span>
+            <span class="tech-tag">Harvard architecture</span>
+            <span class="tech-tag">Single-cycle</span>
+            <span class="tech-tag">8 registers (R0–R7)</span>
+            <span class="tech-tag">16 instructions</span>
+            <span class="tech-tag">9 Verilog modules</span>
+            <span class="tech-tag">Icarus Verilog + GTKWave</span>
+            <span class="tech-tag">Tang Nano 9K</span>
+        </div>
+
+        <h2 class="section-title robot-section-gap">🔀 Datapath</h2>
+        <p class="build-story">Instruction and data memory are kept separate, so a fetch and a data access never contend for the same port — that's what makes single-cycle execution possible without stalling. Every instruction completes in one clock edge: the program counter addresses the instruction ROM, the decoder splits the 16-bit word into its fields, the register file reads two operands combinationally, the ALU computes, and the result is written back before the next rising edge.</p>
+        <p class="build-story"><strong>R0 is hardwired to zero.</strong> That one decision removes the need for separate move and clear instructions — <code>ADD R1, R2, R0</code> is a register copy, and comparing against R0 is a test for zero. It's the same trick MIPS and RISC-V use, and it's why 16 opcodes are enough.</p>
+
+        <div class="wiring-panel">
+            <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" role="img">
+                <title>Zenith TX26 datapath overview</title>
+                <desc>The program counter addresses the instruction memory. The fetched 16-bit instruction goes to the instruction decoder, which splits it into opcode and register fields. The decoder drives the control unit and the sign extender. The register file reads two operands and feeds the ALU. The ALU result is written back to the register file, and also serves as the address for data memory on load and store instructions. Branch and jump targets feed back into the program counter.</desc>
+
+                <!-- main datapath bus -->
+                <line x1="150" y1="240" x2="195" y2="240" stroke="#667eea" stroke-width="2"/>
+                <line x1="365" y1="240" x2="410" y2="240" stroke="#667eea" stroke-width="2"/>
+                <line x1="560" y1="240" x2="605" y2="240" stroke="#667eea" stroke-width="2"/>
+                <line x1="765" y1="240" x2="810" y2="240" stroke="#667eea" stroke-width="2"/>
+                <text x="280" y="230" text-anchor="middle" font-size="11" fill="#8892b0">instruction [15:0]</text>
+                <text x="685" y="230" text-anchor="middle" font-size="11" fill="#8892b0">ra, rb</text>
+
+                <!-- decoder to control unit -->
+                <line x1="485" y1="200" x2="485" y2="150" stroke="#f093fb" stroke-width="1.5" stroke-dasharray="5,4"/>
+                <text x="495" y="180" font-size="11" fill="#f093fb">opcode [15:12]</text>
+
+                <!-- control unit to ALU -->
+                <line x1="560" y1="110" x2="885" y2="110" stroke="#f093fb" stroke-width="1.5" stroke-dasharray="5,4"/>
+                <line x1="885" y1="110" x2="885" y2="180" stroke="#f093fb" stroke-width="1.5" stroke-dasharray="5,4"/>
+                <text x="720" y="102" text-anchor="middle" font-size="11" fill="#f093fb">ALU op / write enable</text>
+
+                <!-- branch + jump target back to PC -->
+                <line x1="410" y1="110" x2="85" y2="110" stroke="#2dd4bf" stroke-width="1.5" stroke-dasharray="5,4"/>
+                <line x1="85" y1="110" x2="85" y2="200" stroke="#2dd4bf" stroke-width="1.5" stroke-dasharray="5,4"/>
+                <text x="248" y="102" text-anchor="middle" font-size="11" fill="#2dd4bf">branch / jump target</text>
+
+                <!-- decoder to sign extender -->
+                <line x1="485" y1="280" x2="485" y2="340" stroke="#667eea" stroke-width="2"/>
+                <text x="495" y="315" font-size="11" fill="#8892b0">imm [5:0]</text>
+
+                <!-- sign extender to ALU -->
+                <line x1="560" y1="375" x2="785" y2="375" stroke="#667eea" stroke-width="2"/>
+                <line x1="785" y1="375" x2="785" y2="215" stroke="#667eea" stroke-width="2"/>
+                <line x1="785" y1="215" x2="810" y2="215" stroke="#667eea" stroke-width="2"/>
+                <text x="672" y="367" text-anchor="middle" font-size="11" fill="#8892b0">imm [15:0]</text>
+
+                <!-- ALU to data memory -->
+                <line x1="885" y1="280" x2="885" y2="340" stroke="#667eea" stroke-width="2"/>
+                <text x="897" y="315" font-size="11" fill="#8892b0">addr / data</text>
+
+                <!-- write-back, routed over the top to avoid crossing the immediate path -->
+                <line x1="960" y1="200" x2="985" y2="200" stroke="#667eea" stroke-width="2"/>
+                <line x1="985" y1="200" x2="985" y2="45" stroke="#667eea" stroke-width="2"/>
+                <line x1="985" y1="45" x2="730" y2="45" stroke="#667eea" stroke-width="2"/>
+                <line x1="730" y1="45" x2="730" y2="180" stroke="#667eea" stroke-width="2"/>
+                <text x="855" y="37" text-anchor="middle" font-size="11" fill="#8892b0">write-back → rd</text>
+
+                <!-- clock in -->
+                <line x1="85" y1="330" x2="85" y2="280" stroke="#8892b0" stroke-width="1.5"/>
+                <text x="85" y="348" text-anchor="middle" font-size="11" fill="#8892b0">clk / reset</text>
+
+                <!-- Program Counter -->
+                <rect x="20" y="200" width="130" height="80" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                <text x="85" y="235" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">Program</text>
+                <text x="85" y="255" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">Counter</text>
+
+                <!-- Instruction Memory -->
+                <rect x="195" y="200" width="170" height="80" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                <text x="280" y="235" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">Instruction ROM</text>
+                <text x="280" y="257" text-anchor="middle" font-size="11" fill="#8892b0">Harvard: separate bus</text>
+
+                <!-- Decoder -->
+                <rect x="410" y="200" width="150" height="80" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                <text x="485" y="235" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">Decoder</text>
+                <text x="485" y="257" text-anchor="middle" font-size="11" fill="#8892b0">splits R / I / J fields</text>
+
+                <!-- Control Unit -->
+                <rect x="410" y="70" width="150" height="80" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                <text x="485" y="105" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">Control Unit</text>
+                <text x="485" y="127" text-anchor="middle" font-size="11" fill="#8892b0">FSM</text>
+
+                <!-- Sign Extender -->
+                <rect x="410" y="340" width="150" height="70" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                <text x="485" y="370" text-anchor="middle" font-size="13" font-weight="600" fill="#e0e0e0">Sign Extender</text>
+                <text x="485" y="391" text-anchor="middle" font-size="11" fill="#8892b0">6-bit → 16-bit</text>
+
+                <!-- Register File -->
+                <rect x="605" y="180" width="160" height="120" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                <text x="685" y="220" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">Register File</text>
+                <text x="685" y="243" text-anchor="middle" font-size="11" fill="#8892b0">8 × 16-bit</text>
+                <text x="685" y="266" text-anchor="middle" font-size="11" fill="#2dd4bf">R0 hardwired to 0</text>
+
+                <!-- ALU -->
+                <rect x="810" y="180" width="150" height="100" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                <text x="885" y="222" text-anchor="middle" font-size="15" font-weight="600" fill="#e0e0e0">ALU</text>
+                <text x="885" y="245" text-anchor="middle" font-size="11" fill="#8892b0">add, sub, and, or,</text>
+                <text x="885" y="262" text-anchor="middle" font-size="11" fill="#8892b0">xor, shift, compare</text>
+
+                <!-- Data Memory -->
+                <rect x="810" y="340" width="150" height="90" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+                <text x="885" y="378" text-anchor="middle" font-size="14" font-weight="600" fill="#e0e0e0">Data RAM</text>
+                <text x="885" y="400" text-anchor="middle" font-size="11" fill="#8892b0">LD / ST only</text>
+
+                <!-- legend -->
+                <line x1="200" y1="470" x2="240" y2="470" stroke="#667eea" stroke-width="2"/>
+                <text x="250" y="474" font-size="12" fill="#8892b0">Data path</text>
+                <line x1="400" y1="470" x2="440" y2="470" stroke="#f093fb" stroke-width="1.5" stroke-dasharray="5,4"/>
+                <text x="450" y="474" font-size="12" fill="#8892b0">Control signals</text>
+                <line x1="620" y1="470" x2="660" y2="470" stroke="#2dd4bf" stroke-width="1.5" stroke-dasharray="5,4"/>
+                <text x="670" y="474" font-size="12" fill="#8892b0">Program flow</text>
+            </svg>
+        </div>
+
+        <h2 class="section-title robot-section-gap">📐 Instruction Encoding</h2>
+        <p class="build-story">Every instruction is exactly 16 bits wide, in one of three layouts. The opcode always occupies the top four bits, so the decoder can identify the format before it knows anything else about the instruction.</p>
+
+        <div class="bitfield-group">
+            <div class="bitfield-label">R-type — register operations</div>
+            <div class="bitfield">
+                <div class="bf-cell" style="flex-grow:4"><span class="bf-bits">15:12</span><span class="bf-name">opcode</span></div>
+                <div class="bf-cell" style="flex-grow:3"><span class="bf-bits">11:9</span><span class="bf-name">rd</span></div>
+                <div class="bf-cell" style="flex-grow:3"><span class="bf-bits">8:6</span><span class="bf-name">ra</span></div>
+                <div class="bf-cell" style="flex-grow:3"><span class="bf-bits">5:3</span><span class="bf-name">rb</span></div>
+                <div class="bf-cell bf-muted" style="flex-grow:3"><span class="bf-bits">2:0</span><span class="bf-name">reserved</span></div>
+            </div>
+        </div>
+
+        <div class="bitfield-group">
+            <div class="bitfield-label">I-type — immediate operations</div>
+            <div class="bitfield">
+                <div class="bf-cell" style="flex-grow:4"><span class="bf-bits">15:12</span><span class="bf-name">opcode</span></div>
+                <div class="bf-cell" style="flex-grow:3"><span class="bf-bits">11:9</span><span class="bf-name">rd</span></div>
+                <div class="bf-cell" style="flex-grow:3"><span class="bf-bits">8:6</span><span class="bf-name">ra</span></div>
+                <div class="bf-cell bf-accent" style="flex-grow:6"><span class="bf-bits">5:0</span><span class="bf-name">immediate, sign-extended</span></div>
+            </div>
+        </div>
+
+        <div class="bitfield-group">
+            <div class="bitfield-label">J-type — jumps and branches</div>
+            <div class="bitfield">
+                <div class="bf-cell" style="flex-grow:4"><span class="bf-bits">15:12</span><span class="bf-name">opcode</span></div>
+                <div class="bf-cell bf-accent" style="flex-grow:12"><span class="bf-bits">11:0</span><span class="bf-name">immediate</span></div>
+            </div>
+        </div>
+
+        <h2 class="section-title robot-section-gap">📋 Instruction Set</h2>
+        <div class="control-table-wrap wide">
+            <table class="control-table">
+                <thead>
+                    <tr><th>Opcode</th><th>Type</th><th>Instruction</th><th>Operation</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>0000</td><td>R</td><td>ADD rd, ra, rb</td><td>rd = ra + rb</td></tr>
+                    <tr><td>0001</td><td>R</td><td>SUB rd, ra, rb</td><td>rd = ra − rb</td></tr>
+                    <tr><td>0010</td><td>R</td><td>AND rd, ra, rb</td><td>rd = ra &amp; rb</td></tr>
+                    <tr><td>0011</td><td>R</td><td>OR rd, ra, rb</td><td>rd = ra | rb</td></tr>
+                    <tr><td>0100</td><td>R</td><td>XOR rd, ra, rb</td><td>rd = ra ^ rb</td></tr>
+                    <tr><td>0101</td><td>R</td><td>SHL rd, ra</td><td>rd = ra &lt;&lt; 1</td></tr>
+                    <tr><td>0110</td><td>R</td><td>SHR rd, ra</td><td>rd = ra &gt;&gt; 1</td></tr>
+                    <tr><td>0111</td><td>R</td><td>SLT rd, ra, rb</td><td>rd = (ra &lt; rb) ? 1 : 0</td></tr>
+                    <tr><td>1000</td><td>I</td><td>LDI rd, imm</td><td>rd = imm</td></tr>
+                    <tr><td>1001</td><td>I</td><td>ADDI rd, ra, imm</td><td>rd = ra + imm</td></tr>
+                    <tr><td>1010</td><td>I</td><td>LD rd, ra, imm</td><td>rd = mem[ra + imm]</td></tr>
+                    <tr><td>1011</td><td>I</td><td>ST rd, ra, imm</td><td>mem[rd + imm] = ra</td></tr>
+                    <tr><td>1100</td><td>J</td><td>JMP imm</td><td>pc = imm</td></tr>
+                    <tr><td>1101</td><td>J</td><td>BEQ ra, rb, imm</td><td>if ra == rb: pc = pc + imm</td></tr>
+                    <tr><td>1110</td><td>J</td><td>BLT ra, rb, imm</td><td>if ra &lt; rb: pc = pc + imm</td></tr>
+                    <tr><td>1111</td><td>—</td><td>NOP</td><td>do nothing</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title robot-section-gap">▶️ Running Code</h2>
+        <p class="build-story">Programs are written in assembly and turned into a memory image by <strong>assembler.py</strong>, a small two-pass assembler written for this instruction set. The program taped out with the chip is an endless Fibonacci loop — it runs until the sequence overflows 16 bits and wraps, then keeps going.</p>
+
+        <div class="asm-block"><pre><code>LDI R1, 0        <span class="asm-c"># R1 = 0   (current)</span>
+LDI R2, 1        <span class="asm-c"># R2 = 1   (next)</span>
+NOP              <span class="asm-c"># loop start</span>
+ADD R3, R1, R2   <span class="asm-c"># temp = R1 + R2</span>
+NOP
+ADD R1, R2, R0   <span class="asm-c"># R1 = R2  (R0 is zero, so this is a copy)</span>
+NOP
+ADD R2, R3, R0   <span class="asm-c"># R2 = temp</span>
+JMP 2            <span class="asm-c"># back to loop start</span></code></pre></div>
+
+        <p class="build-story">The <code>NOP</code>s are there because the register file writes on the clock edge — a result isn't readable by the very next instruction. Spacing the dependent instructions apart is the simplest way to respect that on a design with no forwarding or interlocks. Building a CPU that <em>can</em> issue those instructions back to back means adding a hazard unit, and that's the next revision.</p>
+
+        <h2 class="section-title robot-section-gap">🔬 Verification</h2>
+        <p class="build-story">Each module was simulated in <strong>Icarus Verilog</strong> and inspected waveform by waveform in <strong>GTKWave</strong> before being wired into the top level. The load and store instructions were the last to work — the store encoding uses <code>rd</code> as the address base rather than the destination, which is easy to get backwards and produces silently wrong memory writes rather than an obvious failure.</p>
+        <p class="build-story">After simulation passed, the design was synthesised for a <strong>Tang Nano 9K</strong> FPGA. The board's six LEDs are driven by the low six bits of the program counter, so the loop is visible as a counting pattern — real hardware executing the instruction set, not a testbench asserting that it should.</p>
+
+        <div class="parts-tags">
+            <span class="tech-tag">Icarus Verilog</span>
+            <span class="tech-tag">GTKWave</span>
+            <span class="tech-tag">Sipeed Tang Nano 9K</span>
+            <span class="tech-tag">Gowin toolchain</span>
+            <span class="tech-tag">TinyTapeout submission</span>
+        </div>
+
+        <a href="https://github.com/ethernit14/CPU_16" target="_blank" class="repo-link">View the Verilog on GitHub</a>
+    </div>
+    <footer>
+        <p>&copy; 2026 / Doruk Orak / St. Georg Austrian High School</p>
+        <p>Contact: <a href="mailto:dorak2293@gmail.com" style="color:#667eea; text-decoration:none;">dorak2293@gmail.com</a> </p>
+    </footer>
+    <div class="info-btn" onclick="toggleInfo(event)">ℹ</div>
+    <div class="info-popup" id="infoPopup">
+        <div class="info-popup-inner">
+            <h3>About Me</h3>
+            <p>I'm <strong>Doruk Orak</strong>, a 12th grade student at Sankt Georg Austrian High School in Istanbul.</p>
+            <p>My interests span <strong>hardware design</strong>, <strong>artificial intelligence</strong>, <strong>programming</strong>, and <strong>physics</strong>. Connecting the world of intelligent systems with physical circuits.</p>
+            <ul>
+                <li>🥇 Bebras Informatik — 1st Place, Perfect Score (2024)</li>
+                <li>📜 Andrew Ng ML Specialization — DeepLearning.AI</li>
+                <li>🎯 Targeting TUM Electrical Engineering &amp; IT</li>
+            </ul>
+            <div class="info-links">
+                <a href="https://www.linkedin.com/in/doruk-orak-b066213a7" target="_blank">LinkedIn</a>
+                <a href="https://github.com/ethernit14" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
