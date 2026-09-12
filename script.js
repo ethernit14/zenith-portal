@@ -60,3 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
     createStars();
     startShootingStars();
 });
+
+// Fade the homepage scroll cue once the visitor starts scrolling.
+(function () {
+    const cue = document.getElementById('scrollCue');
+    if (!cue) return;
+    const update = () => cue.classList.toggle('hidden', window.scrollY > 60);
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+})();

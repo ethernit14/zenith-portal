@@ -25,32 +25,137 @@
             <a href="cpu.html">16-Bit CPU</a>
         </nav>
     </div>
-    <div class="content-layer">
-        <div class="hero-panel">
-            <h1>ZENITITH</h1>
-        </div>
-        <p class="subtitle">Engineering at its best</p>
-    </div>
-    <!-- Info Button -->
-    <div class="info-btn" onclick="toggleInfo(event)">ℹ</div>
 
-    <!-- Info Popup -->
-    <div class="info-popup" id="infoPopup">
-        <div class="info-popup-inner">
-            <h3>About Me</h3>
-            <p>I'm <strong>Doruk Orak</strong>, a 12th grade student at Sankt Georg Austrian High School in Istanbul.</p>
-            <p>My interests span <strong>hardware design</strong>, <strong>artificial intelligence</strong>, <strong>programming</strong>, and <strong>physics</strong>. Connecting the world of intelligent systems with physical circuits.</p>
-            <ul>
-                <li>🥇 Bebras Informatik — 1st Place, Perfect Score (2024)</li>
-                <li>📜 Andrew Ng ML Specialization — DeepLearning.AI</li>
-                <li>🎯 Targeting TUM Electrical Engineering & IT</li>
-            </ul>
-            <div class="info-links">
-                <a href="https://www.linkedin.com/in/doruk-orak-b066213a7" target="_blank">LinkedIn</a>
-                <a href="https://github.com/ethernit14" target="_blank">GitHub</a>
+    <div class="content-layer home">
+        <section class="hero-screen">
+            <div class="hero-panel">
+                <h1>ZENITITH</h1>
+                <p class="subtitle">Circuits, silicon, and the software that runs on them</p>
             </div>
-        </div>
+            <p class="hero-line">I'm <strong>Doruk Orak</strong>, an 18-year-old engineer in Istanbul. I design processors in Verilog, train neural networks from scratch, and build the hardware they run on.</p>
+            <div class="scroll-cue" id="scrollCue">
+                <span>Scroll</span>
+                <svg viewBox="0 0 24 14" width="26" height="15" aria-hidden="true">
+                    <path d="M2 2 L12 11 L22 2" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </section>
+
+        <section class="home-summary">
+            <h2 class="section-title">Selected Work</h2>
+
+            <a class="snippet" href="cpu.html">
+                <div class="snippet-art">
+                    <svg viewBox="0 0 320 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simplified CPU datapath">
+                        <line x1="66" y1="75" x2="94" y2="75" stroke="#667eea" stroke-width="2"/>
+                        <line x1="166" y1="75" x2="194" y2="75" stroke="#667eea" stroke-width="2"/>
+                        <line x1="256" y1="60" x2="276" y2="60" stroke="#667eea" stroke-width="2"/>
+                        <line x1="276" y1="60" x2="276" y2="26" stroke="#667eea" stroke-width="2"/>
+                        <line x1="276" y1="26" x2="130" y2="26" stroke="#667eea" stroke-width="2"/>
+                        <line x1="130" y1="26" x2="130" y2="52" stroke="#667eea" stroke-width="2"/>
+                        <line x1="130" y1="118" x2="226" y2="118" stroke="#f093fb" stroke-width="1.5" stroke-dasharray="5,4"/>
+                        <line x1="226" y1="118" x2="226" y2="98" stroke="#f093fb" stroke-width="1.5" stroke-dasharray="5,4"/>
+                        <rect x="12" y="52" width="54" height="46" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)" stroke-width="1.3"/>
+                        <text x="39" y="80" text-anchor="middle" font-size="12" fill="#e0e0e0" font-weight="600">PC</text>
+                        <rect x="94" y="52" width="72" height="46" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)" stroke-width="1.3"/>
+                        <text x="130" y="80" text-anchor="middle" font-size="12" fill="#e0e0e0" font-weight="600">REGS</text>
+                        <rect x="194" y="45" width="62" height="53" rx="9" fill="rgba(45,212,191,0.07)" stroke="rgba(45,212,191,0.45)" stroke-width="1.3"/>
+                        <text x="225" y="77" text-anchor="middle" font-size="13" fill="#2dd4bf" font-weight="600">ALU</text>
+                        <text x="178" y="136" text-anchor="middle" font-size="10" fill="#8892b0">single-cycle · Harvard</text>
+                    </svg>
+                </div>
+                <div class="snippet-body">
+                    <span class="tech-tag">VERILOG / TINYTAPEOUT</span>
+                    <h3>Zenith TX26 — 16-bit CPU</h3>
+                    <p>Nine modules, sixteen instructions, written from scratch. Verified on a Tang Nano 9K FPGA and taped out through TinyTapeout — physical silicon comes back in Q4 2026.</p>
+                </div>
+            </a>
+
+            <a class="snippet snippet-flip" href="diffusion.html">
+                <div class="snippet-art">
+                    <svg viewBox="0 0 320 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Noise resolving into a digit">
+                        <rect x="16" y="48" width="54" height="54" rx="6" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.2)"/>
+                        <rect x="22" y="54" width="9" height="9" fill="#8892b0" opacity="0.8"/><rect x="40" y="54" width="9" height="9" fill="#e0e0e0" opacity="0.5"/>
+                        <rect x="31" y="63" width="9" height="9" fill="#e0e0e0" opacity="0.9"/><rect x="49" y="63" width="9" height="9" fill="#8892b0" opacity="0.6"/>
+                        <rect x="22" y="72" width="9" height="9" fill="#e0e0e0" opacity="0.4"/><rect x="49" y="81" width="9" height="9" fill="#8892b0" opacity="0.9"/>
+                        <rect x="31" y="81" width="9" height="9" fill="#e0e0e0" opacity="0.7"/><rect x="40" y="90" width="9" height="9" fill="#8892b0" opacity="0.5"/>
+                        <rect x="100" y="48" width="54" height="54" rx="6" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.2)"/>
+                        <rect x="120" y="56" width="9" height="9" fill="#e0e0e0" opacity="0.55"/>
+                        <rect x="120" y="65" width="9" height="9" fill="#e0e0e0" opacity="0.75"/>
+                        <rect x="111" y="74" width="9" height="9" fill="#8892b0" opacity="0.5"/>
+                        <rect x="120" y="74" width="9" height="9" fill="#e0e0e0" opacity="0.8"/>
+                        <rect x="129" y="83" width="9" height="9" fill="#8892b0" opacity="0.45"/>
+                        <rect x="120" y="83" width="9" height="9" fill="#e0e0e0" opacity="0.6"/>
+                        <rect x="184" y="48" width="54" height="54" rx="6" fill="rgba(255,255,255,0.06)" stroke="rgba(240,147,251,0.45)"/>
+                        <rect x="204" y="56" width="9" height="38" fill="#f093fb" opacity="0.95"/>
+                        <rect x="195" y="62" width="9" height="9" fill="#f093fb" opacity="0.8"/>
+                        <rect x="195" y="94" width="27" height="8" fill="#f093fb" opacity="0.85"/>
+                        <line x1="74" y1="75" x2="96" y2="75" stroke="#8892b0" stroke-width="1.5"/>
+                        <line x1="158" y1="75" x2="180" y2="75" stroke="#8892b0" stroke-width="1.5"/>
+                        <text x="272" y="70" text-anchor="middle" font-size="11" fill="#8892b0">1000 steps</text>
+                        <text x="272" y="88" text-anchor="middle" font-size="11" fill="#8892b0">of denoising</text>
+                    </svg>
+                </div>
+                <div class="snippet-body">
+                    <span class="tech-tag">PYTORCH / ONNX</span>
+                    <h3>Diffusion Digit Generator</h3>
+                    <p>A DDPM implemented from scratch — noising schedule, U-Net, training loop and sampler all written by hand. 6.47M parameters, exported to ONNX and generating live in your browser.</p>
+                </div>
+            </a>
+
+            <a class="snippet" href="robot.html">
+                <div class="snippet-art snippet-photo">
+                    <img src="images/1000203632.jpg" alt="Mini-Bug Robot" loading="lazy">
+                </div>
+                <div class="snippet-body">
+                    <span class="tech-tag">ESP32 / EMBEDDED</span>
+                    <h3>Mini-Bug Robot</h3>
+                    <p>Four servos, no chassis — just silicone and duct tape holding the frame together. Walks under Xbox control over Bluetooth, with the full power stage and I2C wiring documented.</p>
+                </div>
+            </a>
+
+            <a class="snippet snippet-flip" href="maps.html">
+                <div class="snippet-art">
+                    <svg viewBox="0 0 320 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Shortest path across a street network">
+                        <g stroke="rgba(255,255,255,0.18)" stroke-width="1.5" fill="none">
+                            <path d="M20 30 L90 22 L160 40 L230 28 L300 44"/>
+                            <path d="M14 74 L84 66 L150 82 L222 70 L296 86"/>
+                            <path d="M26 120 L96 112 L164 128 L236 116 L304 130"/>
+                            <path d="M40 18 L34 128"/><path d="M112 16 L104 126"/>
+                            <path d="M186 34 L180 132"/><path d="M258 22 L252 120"/>
+                        </g>
+                        <path d="M34 70 L104 62 L180 78 L252 66" fill="none" stroke="#2dd4bf" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="34" cy="70" r="5.5" fill="#2dd4bf"/>
+                        <circle cx="252" cy="66" r="5.5" fill="none" stroke="#2dd4bf" stroke-width="2.5"/>
+                    </svg>
+                </div>
+                <div class="snippet-body">
+                    <span class="tech-tag">OPENSTREETMAP</span>
+                    <h3>City Route Finder</h3>
+                    <p>Eight search algorithms — BFS, DFS, Dijkstra, A*, Greedy and three bidirectional variants — racing across real street networks pulled live from OpenStreetMap across twelve cities.</p>
+                </div>
+            </a>
+
+            <a href="projects.html" class="repo-link">See all projects</a>
+
+            <div class="home-about">
+                <h3>About</h3>
+                <p>I'm a 12th grade student at St. Georg Austrian High School in Istanbul, heading to <strong>TU München</strong> to read Electrical Engineering and Information Technology. My work sits where intelligent systems meet physical circuits: processor design, embedded hardware, and machine learning implemented from the mathematics up rather than called from a library.</p>
+                <ul>
+                    <li>🥇 Bebras Informatik — 1st Place, Perfect Score (2024)</li>
+                    <li>🔬 16-bit CPU taped out via TinyTapeout (2026)</li>
+                    <li>📜 Andrew Ng ML Specialization — DeepLearning.AI</li>
+                    <li>🗣️ German C1 · English C1 · Turkish native</li>
+                </ul>
+                <div class="info-links">
+                    <a href="https://www.linkedin.com/in/doruk-orak-b066213a7" target="_blank">LinkedIn</a>
+                    <a href="https://github.com/ethernit14" target="_blank">GitHub</a>
+                    <a href="mailto:dorak2293@gmail.com">Email</a>
+                </div>
+            </div>
+        </section>
     </div>
+
     <footer>
         <p>&copy; 2026 / Doruk Orak / St. Georg Austrian High School</p>
         <p>Contact: <a href="mailto:dorak2293@gmail.com" style="color:#667eea; text-decoration:none;">dorak2293@gmail.com</a> </p>
