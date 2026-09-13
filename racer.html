@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://media.istockphoto.com/id/1324569050/tr/vektör/z-letter-liner-logo-design.jpg?s=612x612&w=0&k=20&c=T8AiugxFr90SvvL8mb-gBpHij5vJubiH-Y7T4OcjiHA=">
+    <title>Zenitith | Neural Racing Driver</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="stars-container"><div class="stars" id="stars1"></div></div>
+    <div class="menu-container">
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+        <nav class="side-menu" id="sideMenu">
+            <div class="close-menu" onclick="toggleMenu()">&times;</div>
+            <a href="index.html">Main Menu</a>
+            <a href="projects.html">Projects</a>
+            <a href="robot.html">Mini-Bug Robot</a>
+            <a href="diffusion.html">Diffusion Model</a>
+            <a href="cpu.html">16-Bit CPU</a>
+        </nav>
+    </div>
+
+    <div class="content-layer">
+        <h2 class="section-title">🏎️ Neural Racing Driver</h2>
+        <p class="robot-tagline">A top-down racing simulator where the car is driven by a neural network trained with PPO. It sees eleven distance sensors and its own speed — no track map, no racing line, no waypoints — and learns to drive circuits it has never seen before.</p>
+
+        <div class="clip">
+            <video src="videos/hero.mp4" autoplay muted loop playsinline preload="metadata"></video>
+        </div>
+        <p class="clip-caption">A trained policy lapping a procedurally generated circuit. Nothing here is scripted — every steering and throttle input comes from the network.</p>
+
+        <div class="parts-tags">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">TensorFlow / Keras</span>
+            <span class="tech-tag">PPO</span>
+            <span class="tech-tag">Pygame</span>
+            <span class="tech-tag">NumPy</span>
+            <span class="tech-tag">13 → 128 → 128 → 13</span>
+        </div>
+
+        <h2 class="section-title robot-section-gap">👁️ What the Car Sees</h2>
+        <p class="build-story">The network gets thirteen numbers per frame and nothing else. Eleven of them are raycast distances, fired at <strong>±90°, ±60°, ±30°, ±20°, ±10° and straight ahead</strong>, each one reporting how far it travels before leaving the tarmac. The other two are the car's own velocity and acceleration.</p>
+        <p class="build-story">There is no map. The policy never knows where it is on the circuit, how long the lap is, or what the corner after this one looks like. Everything it does is a reaction to eleven numbers that describe the road immediately around it, which is why a network trained on one set of circuits can drive a completely new one.</p>
+
+        <div class="clip">
+            <video src="videos/rays.mp4" controls muted loop playsinline preload="metadata" poster="videos/rays-poster.jpg"></video>
+        </div>
+        <p class="clip-caption">The camera is locked to the car so the sensors sit at fixed screen angles — only their <em>lengths</em> change. Watch the left-hand beams collapse as the tyre stack comes up, and the forward beam shorten into the corner. That collapsing fan is the entire input vector.</p>
+
+        <h2 class="section-title robot-section-gap">🧠 Inside the Network</h2>
+        <p class="build-story">Two hidden layers of 128 units map those thirteen inputs onto thirteen discrete actions — every sensible combination of throttle, brake, steering and handbrake, from coasting to full-throttle-and-left to a handbrake turn. The policy outputs a probability for each, and the driver takes the most likely one.</p>
+
+        <div class="clip clip-narrow">
+            <video src="videos/brain.mp4" controls muted loop playsinline preload="metadata" poster="videos/brain-poster.jpg"></video>
+        </div>
+        <p class="clip-caption">Live activations while driving. Inputs run down the left (velocity, acceleration, then each ray from L90 round to R90), action probabilities down the right. The highlighted output is what the car is doing this frame.</p>
+
+        <h2 class="section-title robot-section-gap">🛣️ Generating Circuits</h2>
+        <p class="build-story">Tracks are built from a closed Catmull-Rom spline through randomly placed control points, resampled to even spacing and rasterised into a mask. That mask does double duty: it is what the physics tests against for wall contact, and it is what the sensor rays terminate on — so obstacles punched out of it become visible to the network for free, without a single extra input.</p>
+        <p class="build-story">Four difficulty tiers change what gets generated. <strong>Easy</strong> and <strong>medium</strong> are plain circuits; <strong>hard</strong> adds tyre stacks on the racing line; <strong>extreme</strong> adds cars coming the other way. Oncoming traffic is modelled as pairs of moving circles rather than being baked into the mask, since re-rasterising a full-resolution surface every frame would cost more than the entire physics step.</p>
+
+        <div class="control-table-wrap wide">
+            <table class="control-table">
+                <thead>
+                    <tr><th>Tier</th><th>What it generates</th><th>Why it's harder</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Easy</td><td>Wide circuit, gentle radii</td><td>Most corners can be taken flat</td></tr>
+                    <tr><td>Medium</td><td>Tighter corners, varying width</td><td>Requires braking and placement</td></tr>
+                    <tr><td>Hard</td><td>Tyre stacks on the tarmac</td><td>The racing line is now blocked</td></tr>
+                    <tr><td>Extreme</td><td>Oncoming traffic holding a lane</td><td>Must pass through a moving gap</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title robot-section-gap">🔧 Three Things That Went Wrong</h2>
+
+        <p class="build-story"><strong>The circuit that taught one corner.</strong> The first track had a single wide corner. The policy trained on it lapped beautifully and then fell apart on anything else — it hadn't learned to corner, it had learned <em>that</em> corner. The replacement is deliberately unpleasant: twelve corners that can't be taken flat, a long straight that ends in one of them, and three pinch points where the road narrows to roughly twice the width of the car.</p>
+
+        <p class="build-story"><strong>The impossible pinch point.</strong> An early version put one of those narrow sections mid-corner. Threading an 80 px gap on a line the car must already be braking for isn't a hard corner, it's an unachievable one, and the trained policy simply could not complete a lap. Moving all three pinches onto near-straight sections fixed it. The lesson generalised: when a policy plateaus at zero, suspect the environment before the algorithm.</p>
+
+        <p class="build-story"><strong>The track that was entirely wall.</strong> The mask read as solid barrier on macOS and worked fine elsewhere. The cause was reading pixels back with <code>array2d</code>, which returns the packed pixel value as a signed 32-bit integer. On a surface carrying an alpha channel — which macOS provides and Linux doesn't — opaque black packs to <code>0xFF000000</code>, overflows to −16777216, and every "is this pixel road?" comparison fails. Reading through <code>array3d</code> instead returns plain RGB bytes regardless of the underlying surface format.</p>
+
+        <a href="https://github.com/ethernit14/Neural-Driver" target="_blank" class="repo-link">View the code on GitHub</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 / Doruk Orak / St. Georg Austrian High School</p>
+        <p>Contact: <a href="mailto:dorak2293@gmail.com" style="color:#667eea; text-decoration:none;">dorak2293@gmail.com</a> </p>
+    </footer>
+    <div class="info-btn" onclick="toggleInfo(event)">ℹ</div>
+    <div class="info-popup" id="infoPopup">
+        <div class="info-popup-inner">
+            <h3>About Me</h3>
+            <p>I'm <strong>Doruk Orak</strong>, a 12th grade student at Sankt Georg Austrian High School in Istanbul.</p>
+            <p>My interests span <strong>hardware design</strong>, <strong>artificial intelligence</strong>, <strong>programming</strong>, and <strong>physics</strong>. Connecting the world of intelligent systems with physical circuits.</p>
+            <ul>
+                <li>🥇 Bebras Informatik — 1st Place, Perfect Score (2024)</li>
+                <li>📜 Andrew Ng ML Specialization — DeepLearning.AI</li>
+                <li>🎯 Targeting TUM Electrical Engineering &amp; IT</li>
+            </ul>
+            <div class="info-links">
+                <a href="https://www.linkedin.com/in/doruk-orak-b066213a7" target="_blank">LinkedIn</a>
+                <a href="https://github.com/ethernit14" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
